@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canada Trade Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: auto;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+    </style>
+</head>
+<body>
+
+<h1>CA Canada Trade Dashboard</h1>
+
+<div class="container">
+    <canvas id="tradeChart"></canvas>
+</div>
+
+<script>
+fetch("https://huggingface.co/datasets/WilgnerCH/canada-trade-analytics/resolve/main/monthly.json")
+.then(res => res.json())
+.then(data => {
+
+    const labels = [...new Set(data.map(d => d.date))];
+
+    const imports = labels.map(date => {
+        const row = data.find(d => d.date === date && d.trade_type === "Import");
+        return row ? row.Value : null;
+    });
+
+    const exports = labels.map(date => {
+        const row = data.find(d => d.date === date && d.trade_type === "Export");
+        return row ? row.Value : null;
+    });
+
+    new Chart(document.getElementById("tradeChart"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Imports",
+                    data: imports,
+                    borderColor: "#38bdf8",
+                    backgroundColor: "transparent",
+                    tension: 0.4
+                },
+                {
+                    label: "Exports",
+                    data: exports,
+                    borderColor: "#f43f5e",
+                    backgroundColor: "transparent",
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "white"
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ": $" +
+                                context.raw.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        color: "#cbd5e1",
+                        font: {
+                            size: 14
+                        },
+                        callback: function(value) {
+                            const num = value / 1e9;
+                            return "$" + (Number.isInteger(num) ? num : num.toFixed(1)) + " bi";
+                        }
+                    },
+                    grid: {
+                        color: "#1e293b"
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: "#94a3b8",
+                        maxRotation: 45,
+                        minRotation: 45
+                    },
+                    grid: {
+                        color: "#1e293b"
+                    }
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>
