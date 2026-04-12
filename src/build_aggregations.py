@@ -1,5 +1,4 @@
 import pandas as pd
-from huggingface_hub import HfApi
 import os
 import json
 
@@ -9,7 +8,7 @@ import json
 
 DATA_URL = "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade_full.parquet"
 
-OUTPUT_DIR = "data_output"
+OUTPUT_DIR = "data"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
@@ -18,8 +17,27 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # =========================
 
 def load_data():
-    print("Loading dataset...")
-    return pd.read_parquet(DATA_URL)
+    print("📥 Loading dataset...")
+    df = pd.read_parquet(DATA_URL)
+    print(f"✅ Dataset loaded: {len(df)} rows")
+    return df
+
+
+# =========================
+# CLEAN (REMOVE DUPLICATION)
+# =========================
+
+def clean_data(df):
+    print("🧹 Cleaning data (removing duplicates)...")
+
+    df_clean = (
+        df.groupby(["date", "trade_type", "Country", "HS"])["Value"]
+        .sum()
+        .reset_index()
+    )
+
+    print(f"✅ Clean dataset: {len(df_clean)} rows")
+    return df_clean
 
 
 # =========================
@@ -28,52 +46,13 @@ def load_data():
 
 def monthly_summary(df):
 
-    print("\n====================")
-    print("DEBUG - TOTAL BRUTO 2026-02")
-    print("====================")
-
-    print("IMPORT:")
-    print(
-        df[(df["date"] == "2026-02") & (df["trade_type"] == "Import")]["Value"].sum()
-    )
-
-    print("EXPORT:")
-    print(
-        df[(df["date"] == "2026-02") & (df["trade_type"] == "Export")]["Value"].sum()
-    )
-
-    df_clean = (
-        df.groupby(["date", "trade_type", "Country", "HS"])["Value"]
-        .sum()
-        .reset_index()
-    )
-
     monthly = (
-        df_clean.groupby(["date", "trade_type"])["Value"]
+        df.groupby(["date", "trade_type"])["Value"]
         .sum()
         .reset_index()
     )
 
-    print("\n====================")
-    print("DEBUG - TOTAL FINAL 2026-02")
-    print("====================")
-
-    print("IMPORT:")
-    print(
-        monthly[
-            (monthly["date"] == "2026-02") &
-            (monthly["trade_type"] == "Import")
-        ]["Value"].values
-    )
-
-    print("EXPORT:")
-    print(
-        monthly[
-            (monthly["date"] == "2026-02") &
-            (monthly["trade_type"] == "Export")
-        ]["Value"].values
-    )
-
+    print("📊 Monthly summary created")
     return monthly
 
 
@@ -82,23 +61,31 @@ def monthly_summary(df):
 # =========================
 
 def country_summary(df):
-    return (
+
+    country = (
         df.groupby(["Country", "trade_type"])["Value"]
         .sum()
         .reset_index()
     )
+
+    print("🌍 Country summary created")
+    return country
 
 
 # =========================
 # PRODUCTS SUMMARY
 # =========================
 
-def top_products(df):
-    return (
+def product_summary(df):
+
+    products = (
         df.groupby(["HS", "trade_type"])["Value"]
         .sum()
         .reset_index()
     )
+
+    print("📦 Product summary created")
+    return products
 
 
 # =========================
@@ -107,16 +94,9 @@ def top_products(df):
 
 def save_outputs(monthly, country, products):
 
-    # =========================
-    # PARQUET (backend)
-    # =========================
-    monthly.to_parquet(f"{OUTPUT_DIR}/monthly.parquet", index=False)
-    country.to_parquet(f"{OUTPUT_DIR}/country.parquet", index=False)
-    products.to_parquet(f"{OUTPUT_DIR}/products.parquet", index=False)
-
-    # =========================
-    # MONTHLY JSON
-    # =========================
+    # -------------------------
+    # MONTHLY JSON (FOR LINE CHART)
+    # -------------------------
     monthly_pivot = (
         monthly.pivot(index="date", columns="trade_type", values="Value")
         .fillna(0)
@@ -132,12 +112,9 @@ def save_outputs(monthly, country, products):
         for _, row in monthly_pivot.iterrows()
     ]
 
-    with open(f"{OUTPUT_DIR}/monthly.json", "w") as f:
-        json.dump(monthly_json, f)
-
-    # =========================
-    # COUNTRIES JSON
-    # =========================
+    # -------------------------
+    # COUNTRIES JSON (BAR CHART)
+    # -------------------------
     countries_pivot = (
         country.pivot(index="Country", columns="trade_type", values="Value")
         .fillna(0)
@@ -156,12 +133,9 @@ def save_outputs(monthly, country, products):
 
     countries_json = sorted(countries_json, key=lambda x: x["total"], reverse=True)
 
-    with open(f"{OUTPUT_DIR}/countries.json", "w") as f:
-        json.dump(countries_json[:20], f)
-
-    # =========================
-    # PRODUCTS JSON
-    # =========================
+    # -------------------------
+    # PRODUCTS JSON (BAR CHART)
+    # -------------------------
     products_pivot = (
         products.pivot(index="HS", columns="trade_type", values="Value")
         .fillna(0)
@@ -180,72 +154,41 @@ def save_outputs(monthly, country, products):
 
     products_json = sorted(products_json, key=lambda x: x["total"], reverse=True)
 
+    # -------------------------
+    # SAVE FILES
+    # -------------------------
+    with open(f"{OUTPUT_DIR}/monthly.json", "w") as f:
+        json.dump(monthly_json, f)
+
+    with open(f"{OUTPUT_DIR}/countries.json", "w") as f:
+        json.dump(countries_json[:20], f)
+
     with open(f"{OUTPUT_DIR}/products.json", "w") as f:
         json.dump(products_json[:20], f)
 
-    print("✅ JSON + PARQUET files saved")
+    print("💾 JSON files saved in /data")
 
 
 # =========================
-# UPLOAD TO HUGGING FACE
-# =========================
-
-def upload_to_hf():
-    api = HfApi()
-    token = os.getenv("HF_TOKEN")
-
-    for file in os.listdir(OUTPUT_DIR):
-        api.upload_file(
-            path_or_fileobj=f"{OUTPUT_DIR}/{file}",
-            path_in_repo=file,
-            repo_id="WilgnerCH/canada-trade-analytics",
-            repo_type="dataset",
-            token=token
-        )
-
-    print("✅ Upload complete")
-
-
-# =========================
-# MAIN PIPELINE
+# MAIN
 # =========================
 
 def main():
+
     df = load_data()
 
-    print("\n====================")
-    print("DEBUG - DADOS 2026-02")
-    print("====================")
-    print(df[df["date"] == "2026-02"])
+    # CLEAN DATA (ESSENCIAL)
+    df_clean = clean_data(df)
 
-    print("\n====================")
-    print("DEBUG - COUNTRIES DISPONÍVEIS")
-    print("====================")
-    print(df["Country"].unique())
+    # BUILD AGGREGATIONS
+    m = monthly_summary(df_clean)
+    c = country_summary(df_clean)
+    p = product_summary(df_clean)
 
-    print("\n====================")
-    print("TOP HS 2026-02")
-    print("====================")
-
-    print(
-        df[df["date"] == "2026-02"]
-        .groupby("HS")["Value"]
-        .sum()
-        .sort_values(ascending=False)
-        .head(20)
-    )
-
-    # =========================
-    # PROCESSAMENTO
-    # =========================
-    m = monthly_summary(df)
-    c = country_summary(df)
-    p = top_products(df)
-
+    # SAVE FILES
     save_outputs(m, c, p)
-    upload_to_hf()
 
-    print("🚀 Done")
+    print("🚀 Pipeline finished successfully!")
 
 
 if __name__ == "__main__":
