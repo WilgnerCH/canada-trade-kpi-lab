@@ -14,11 +14,52 @@ def load_data():
 
 
 def monthly_summary(df):
-    return (
-        df.groupby(["date", "trade_type"])["Value"]
+
+    # 🔴 DEBUG - ver valores antes de qualquer filtro
+    print("\n====================")
+    print("DEBUG - TOTAL BRUTO 2026-02")
+    print("====================")
+
+    print("IMPORT:")
+    print(
+        df[(df["date"] == "2026-02") & (df["trade_type"] == "Import")]["Value"].sum()
+    )
+
+    print("EXPORT:")
+    print(
+        df[(df["date"] == "2026-02") & (df["trade_type"] == "Export")]["Value"].sum()
+    )
+
+    # 🟡 AGREGAÇÃO CORRETA (remove duplicações estruturais)
+    df_clean = (
+        df.groupby(["date", "trade_type", "Country", "HS"])["Value"]
         .sum()
         .reset_index()
     )
+
+    # 🔵 TOTAL FINAL
+    monthly = (
+        df_clean.groupby(["date", "trade_type"])["Value"]
+        .sum()
+        .reset_index()
+    )
+
+    # 🟢 DEBUG FINAL
+    print("\n====================")
+    print("DEBUG - TOTAL FINAL 2026-02")
+    print("====================")
+
+    print("IMPORT:")
+    print(
+        monthly[(monthly["date"] == "2026-02") & (monthly["trade_type"] == "Import")]["Value"].values
+    )
+
+    print("EXPORT:")
+    print(
+        monthly[(monthly["date"] == "2026-02") & (monthly["trade_type"] == "Export")]["Value"].values
+    )
+
+    return monthly
 
 
 def country_summary(df):
