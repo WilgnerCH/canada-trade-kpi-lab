@@ -66,6 +66,15 @@ def upload_to_hf():
 def main():
     df = load_data()
 
+    print("COLUNAS:")
+    print(df.columns)
+
+    print("\nPRIMEIRAS LINHAS:")
+    print(df.head())
+
+    print("\nDADOS DE 2026-02:")
+    print(df[df["date"] == "2026-02"])
+
     m = monthly_summary(df)
     c = country_summary(df)
     p = top_products(df)
