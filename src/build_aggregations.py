@@ -15,7 +15,7 @@ def load_data():
 
 def monthly_summary(df):
 
-    # 🔴 DEBUG - ver valores antes de qualquer filtro
+    # 🔴 DEBUG - TOTAL BRUTO
     print("\n====================")
     print("DEBUG - TOTAL BRUTO 2026-02")
     print("====================")
@@ -30,7 +30,7 @@ def monthly_summary(df):
         df[(df["date"] == "2026-02") & (df["trade_type"] == "Export")]["Value"].sum()
     )
 
-    # 🟡 AGREGAÇÃO CORRETA (remove duplicações estruturais)
+    # 🟡 AGREGAÇÃO (evita duplicidade estrutural)
     df_clean = (
         df.groupby(["date", "trade_type", "Country", "HS"])["Value"]
         .sum()
@@ -51,12 +51,18 @@ def monthly_summary(df):
 
     print("IMPORT:")
     print(
-        monthly[(monthly["date"] == "2026-02") & (monthly["trade_type"] == "Import")]["Value"].values
+        monthly[
+            (monthly["date"] == "2026-02") &
+            (monthly["trade_type"] == "Import")
+        ]["Value"].values
     )
 
     print("EXPORT:")
     print(
-        monthly[(monthly["date"] == "2026-02") & (monthly["trade_type"] == "Export")]["Value"].values
+        monthly[
+            (monthly["date"] == "2026-02") &
+            (monthly["trade_type"] == "Export")
+        ]["Value"].values
     )
 
     return monthly
@@ -108,7 +114,7 @@ def main():
     df = load_data()
 
     # =========================
-    # DEBUG (TEMPORÁRIO)
+    # DEBUG - DADOS
     # =========================
     print("\n====================")
     print("DEBUG - DADOS 2026-02")
@@ -119,6 +125,19 @@ def main():
     print("DEBUG - COUNTRIES DISPONÍVEIS")
     print("====================")
     print(df["Country"].unique())
+
+    # 🆕 DEBUG CRÍTICO (TOP HS)
+    print("\n====================")
+    print("TOP HS 2026-02")
+    print("====================")
+
+    print(
+        df[df["date"] == "2026-02"]
+        .groupby("HS")["Value"]
+        .sum()
+        .sort_values(ascending=False)
+        .head(20)
+    )
 
     # =========================
     # PROCESSAMENTO
