@@ -1,0 +1,24 @@
+name: Monthly Analytics Update
+
+on:
+  schedule:
+    - cron: '0 6 10 * *'
+  workflow_dispatch:
+
+jobs:
+  build-analytics:
+    runs-on: ubuntu-latest
+
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements.txt
+
+      - run: python src/build_aggregations.py
