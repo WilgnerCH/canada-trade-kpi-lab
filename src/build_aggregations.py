@@ -1,6 +1,11 @@
 import pandas as pd
 from huggingface_hub import HfApi
 import os
+import json
+
+# =========================
+# CONFIG
+# =========================
 
 DATA_URL = "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade_full.parquet"
 
@@ -8,14 +13,21 @@ OUTPUT_DIR = "data_output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
+# =========================
+# LOAD DATA
+# =========================
+
 def load_data():
     print("Loading dataset...")
     return pd.read_parquet(DATA_URL)
 
 
+# =========================
+# MONTHLY SUMMARY
+# =========================
+
 def monthly_summary(df):
 
-    # 🔴 DEBUG - TOTAL BRUTO
     print("\n====================")
     print("DEBUG - TOTAL BRUTO 2026-02")
     print("====================")
@@ -30,21 +42,18 @@ def monthly_summary(df):
         df[(df["date"] == "2026-02") & (df["trade_type"] == "Export")]["Value"].sum()
     )
 
-    # 🟡 AGREGAÇÃO (evita duplicidade estrutural)
     df_clean = (
         df.groupby(["date", "trade_type", "Country", "HS"])["Value"]
         .sum()
         .reset_index()
     )
 
-    # 🔵 TOTAL FINAL
     monthly = (
         df_clean.groupby(["date", "trade_type"])["Value"]
         .sum()
         .reset_index()
     )
 
-    # 🟢 DEBUG FINAL
     print("\n====================")
     print("DEBUG - TOTAL FINAL 2026-02")
     print("====================")
@@ -68,33 +77,118 @@ def monthly_summary(df):
     return monthly
 
 
+# =========================
+# COUNTRY SUMMARY
+# =========================
+
 def country_summary(df):
     return (
         df.groupby(["Country", "trade_type"])["Value"]
         .sum()
         .reset_index()
-        .sort_values("Value", ascending=False)
-        .head(50)
     )
 
+
+# =========================
+# PRODUCTS SUMMARY
+# =========================
 
 def top_products(df):
     return (
         df.groupby(["HS", "trade_type"])["Value"]
         .sum()
         .reset_index()
-        .sort_values("Value", ascending=False)
-        .head(100)
     )
 
 
+# =========================
+# SAVE OUTPUTS
+# =========================
+
 def save_outputs(monthly, country, products):
+
+    # =========================
+    # PARQUET (backend)
+    # =========================
     monthly.to_parquet(f"{OUTPUT_DIR}/monthly.parquet", index=False)
     country.to_parquet(f"{OUTPUT_DIR}/country.parquet", index=False)
     products.to_parquet(f"{OUTPUT_DIR}/products.parquet", index=False)
 
-    monthly.to_json(f"{OUTPUT_DIR}/monthly.json", orient="records")
+    # =========================
+    # MONTHLY JSON
+    # =========================
+    monthly_pivot = (
+        monthly.pivot(index="date", columns="trade_type", values="Value")
+        .fillna(0)
+        .reset_index()
+    )
 
+    monthly_json = [
+        {
+            "date": row["date"],
+            "imports": float(row.get("Import", 0)),
+            "exports": float(row.get("Export", 0))
+        }
+        for _, row in monthly_pivot.iterrows()
+    ]
+
+    with open(f"{OUTPUT_DIR}/monthly.json", "w") as f:
+        json.dump(monthly_json, f)
+
+    # =========================
+    # COUNTRIES JSON
+    # =========================
+    countries_pivot = (
+        country.pivot(index="Country", columns="trade_type", values="Value")
+        .fillna(0)
+        .reset_index()
+    )
+
+    countries_json = [
+        {
+            "country": row["Country"],
+            "imports": float(row.get("Import", 0)),
+            "exports": float(row.get("Export", 0)),
+            "total": float(row.get("Import", 0) + row.get("Export", 0))
+        }
+        for _, row in countries_pivot.iterrows()
+    ]
+
+    countries_json = sorted(countries_json, key=lambda x: x["total"], reverse=True)
+
+    with open(f"{OUTPUT_DIR}/countries.json", "w") as f:
+        json.dump(countries_json[:20], f)
+
+    # =========================
+    # PRODUCTS JSON
+    # =========================
+    products_pivot = (
+        products.pivot(index="HS", columns="trade_type", values="Value")
+        .fillna(0)
+        .reset_index()
+    )
+
+    products_json = [
+        {
+            "hs": str(row["HS"]),
+            "imports": float(row.get("Import", 0)),
+            "exports": float(row.get("Export", 0)),
+            "total": float(row.get("Import", 0) + row.get("Export", 0))
+        }
+        for _, row in products_pivot.iterrows()
+    ]
+
+    products_json = sorted(products_json, key=lambda x: x["total"], reverse=True)
+
+    with open(f"{OUTPUT_DIR}/products.json", "w") as f:
+        json.dump(products_json[:20], f)
+
+    print("✅ JSON + PARQUET files saved")
+
+
+# =========================
+# UPLOAD TO HUGGING FACE
+# =========================
 
 def upload_to_hf():
     api = HfApi()
@@ -109,13 +203,16 @@ def upload_to_hf():
             token=token
         )
 
+    print("✅ Upload complete")
+
+
+# =========================
+# MAIN PIPELINE
+# =========================
 
 def main():
     df = load_data()
 
-    # =========================
-    # DEBUG - DADOS
-    # =========================
     print("\n====================")
     print("DEBUG - DADOS 2026-02")
     print("====================")
@@ -126,7 +223,6 @@ def main():
     print("====================")
     print(df["Country"].unique())
 
-    # 🆕 DEBUG CRÍTICO (TOP HS)
     print("\n====================")
     print("TOP HS 2026-02")
     print("====================")
@@ -149,7 +245,7 @@ def main():
     save_outputs(m, c, p)
     upload_to_hf()
 
-    print("Done 🚀")
+    print("🚀 Done")
 
 
 if __name__ == "__main__":
