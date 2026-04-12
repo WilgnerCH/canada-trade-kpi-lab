@@ -66,6 +66,15 @@ def upload_to_hf():
 def main():
     df = load_data()
 
+    print("\n====================")
+    print("DEBUG - DADOS 2026-02")
+    print("====================")
+
+    print(df[df["date"] == "2026-02"])
+
+    print("\nCOUNTRIES DISPONÍVEIS:")
+    print(df["Country"].unique())
+
     print("COLUNAS:")
     print(df.columns)
 
