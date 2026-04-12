@@ -66,24 +66,22 @@ def upload_to_hf():
 def main():
     df = load_data()
 
+    # =========================
+    # DEBUG (TEMPORÁRIO)
+    # =========================
     print("\n====================")
     print("DEBUG - DADOS 2026-02")
     print("====================")
-
     print(df[df["date"] == "2026-02"])
 
-    print("\nCOUNTRIES DISPONÍVEIS:")
+    print("\n====================")
+    print("DEBUG - COUNTRIES DISPONÍVEIS")
+    print("====================")
     print(df["Country"].unique())
 
-    print("COLUNAS:")
-    print(df.columns)
-
-    print("\nPRIMEIRAS LINHAS:")
-    print(df.head())
-
-    print("\nDADOS DE 2026-02:")
-    print(df[df["date"] == "2026-02"])
-
+    # =========================
+    # PROCESSAMENTO
+    # =========================
     m = monthly_summary(df)
     c = country_summary(df)
     p = top_products(df)
