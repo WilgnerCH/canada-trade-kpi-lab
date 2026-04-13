@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import json
+from hs_lookup import get_hs_lookup, match_hs_description
 
 # =========================
 # CONFIG
@@ -94,8 +95,11 @@ def product_summary(df):
 
 def save_outputs(monthly, country, products):
 
+    print("🔗 Loading HS lookup...")
+    hs_lookup = get_hs_lookup()
+
     # -------------------------
-    # MONTHLY JSON (FOR LINE CHART)
+    # MONTHLY JSON
     # -------------------------
     monthly_pivot = (
         monthly.pivot(index="date", columns="trade_type", values="Value")
@@ -113,7 +117,7 @@ def save_outputs(monthly, country, products):
     ]
 
     # -------------------------
-    # COUNTRIES JSON (BAR CHART)
+    # COUNTRIES JSON
     # -------------------------
     countries_pivot = (
         country.pivot(index="Country", columns="trade_type", values="Value")
@@ -134,7 +138,7 @@ def save_outputs(monthly, country, products):
     countries_json = sorted(countries_json, key=lambda x: x["total"], reverse=True)
 
     # -------------------------
-    # PRODUCTS JSON (BAR CHART)
+    # PRODUCTS JSON (COM NOME!)
     # -------------------------
     products_pivot = (
         products.pivot(index="HS", columns="trade_type", values="Value")
@@ -145,6 +149,7 @@ def save_outputs(monthly, country, products):
     products_json = [
         {
             "hs": str(row["HS"]),
+            "name": match_hs_description(row["HS"], hs_lookup),
             "imports": float(row.get("Import", 0)),
             "exports": float(row.get("Export", 0)),
             "total": float(row.get("Import", 0) + row.get("Export", 0))
