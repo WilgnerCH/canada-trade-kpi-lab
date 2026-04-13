@@ -146,16 +146,20 @@ def save_outputs(monthly, country, products):
         .reset_index()
     )
 
-    products_json = [
-        {
-            "hs": str(row["HS"]),
-            "name": match_hs_description(row["HS"], hs_lookup),
+    products_json = []
+
+    for _, row in products_pivot.iterrows():
+
+        hs_code = row["HS"]
+        name = match_hs_description(hs_code, hs_lookup)
+
+        products_json.append({
+            "hs": str(hs_code),
+            "name": name,
             "imports": float(row.get("Import", 0)),
             "exports": float(row.get("Export", 0)),
             "total": float(row.get("Import", 0) + row.get("Export", 0))
-        }
-        for _, row in products_pivot.iterrows()
-    ]
+        })
 
     products_json = sorted(products_json, key=lambda x: x["total"], reverse=True)
 
@@ -182,15 +186,12 @@ def main():
 
     df = load_data()
 
-    # CLEAN DATA (ESSENCIAL)
     df_clean = clean_data(df)
 
-    # BUILD AGGREGATIONS
     m = monthly_summary(df_clean)
     c = country_summary(df_clean)
     p = product_summary(df_clean)
 
-    # SAVE FILES
     save_outputs(m, c, p)
 
     print("🚀 Pipeline finished successfully!")
