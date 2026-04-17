@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import json
+import re
 from hs_lookup import get_hs_lookup, match_hs_description
 
 # =========================
@@ -90,6 +91,20 @@ def product_summary(df):
 
 
 # =========================
+# 🧼 CLEAN PRODUCT NAME
+# =========================
+
+def clean_product_name(name):
+    if not name:
+        return name
+
+    # Remove HS code no início (ex: 2709.00, 01.01, 0101 etc.)
+    cleaned = re.sub(r'^\d+(\.\d+)*\s*', '', name)
+
+    return cleaned.strip()
+
+
+# =========================
 # SAVE OUTPUTS
 # =========================
 
@@ -138,7 +153,7 @@ def save_outputs(monthly, country, products):
     countries_json = sorted(countries_json, key=lambda x: x["total"], reverse=True)
 
     # -------------------------
-    # PRODUCTS JSON (COM NOME!)
+    # PRODUCTS JSON (COM NOME LIMPO)
     # -------------------------
     products_pivot = (
         products.pivot(index="HS", columns="trade_type", values="Value")
@@ -151,7 +166,12 @@ def save_outputs(monthly, country, products):
     for _, row in products_pivot.iterrows():
 
         hs_code = row["HS"]
-        name = match_hs_description(hs_code, hs_lookup)
+
+        # Nome original
+        raw_name = match_hs_description(hs_code, hs_lookup)
+
+        # Nome limpo
+        name = clean_product_name(raw_name)
 
         products_json.append({
             "hs": str(hs_code),
