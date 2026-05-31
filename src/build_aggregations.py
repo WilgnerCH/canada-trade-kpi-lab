@@ -104,7 +104,9 @@ HS2_NAMES = {
     "94": "Furniture",
     "95": "Toys and sports equipment",
     "96": "Miscellaneous manufactured articles",
-    "97": "Works of art"
+    "97": "Works of art",
+    "98": "Special transactions",
+    "99": "Confidential trade"
 }
 
 # =========================
