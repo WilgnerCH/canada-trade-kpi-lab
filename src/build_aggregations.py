@@ -126,7 +126,10 @@ def save_outputs(monthly, country, products):
         {
             "date": row["date"],
             "imports": float(row.get("Import", 0)),
-            "exports": float(row.get("Export", 0))
+            "exports": float(row.get("Export", 0)),
+            "balance": float(
+                row.get("Export", 0) - row.get("Import", 0)
+            )
         }
         for _, row in monthly_pivot.iterrows()
     ]
