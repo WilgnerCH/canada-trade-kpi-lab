@@ -28,9 +28,10 @@ files = [
     "countries_monthly",
     "monthly",
     "products",
-    "products_monthly",
+    "products_monthly_top100",
     "products_top100",
-    "hs2_summary"
+    "hs2_summary",
+    "hs2_monthly"
 ]
 
 for file in files:
