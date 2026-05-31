@@ -185,18 +185,24 @@ def save_outputs(monthly, country, products):
         })
 
     products_json = sorted(products_json, key=lambda x: x["total"], reverse=True)
+    
+    # Top 100 products for dashboards
+    products_top100_json = products_json[:100]
 
     # -------------------------
     # SAVE FILES
     # -------------------------
     with open(f"{OUTPUT_DIR}/monthly.json", "w") as f:
         json.dump(monthly_json, f)
-
+    
     with open(f"{OUTPUT_DIR}/countries.json", "w") as f:
         json.dump(countries_json, f)
-
+    
     with open(f"{OUTPUT_DIR}/products.json", "w") as f:
         json.dump(products_json, f)
+    
+    with open(f"{OUTPUT_DIR}/products_top100.json", "w") as f:
+        json.dump(products_top100_json, f)
 
     print("💾 JSON files saved in /data")
 
