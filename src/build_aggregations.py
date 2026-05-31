@@ -306,6 +306,26 @@ def save_outputs(
     products_top100_json = products_json[:100]
 
     # -------------------------
+    # PRODUCTS MONTHLY TOP100
+    # -------------------------
+    
+    top100_hs = set(
+        product["hs"]
+        for product in products_top100_json
+    )
+    
+    products_monthly_top100_json = [
+        row
+        for row in products_monthly_json
+        if row["hs"] in top100_hs
+    ]
+    
+    print(
+        f"Products monthly top100 records: "
+        f"{len(products_monthly_top100_json)}"
+    )
+    
+    # -------------------------
     # SAVE FILES
     # -------------------------
     with open(f"{OUTPUT_DIR}/monthly.json", "w") as f:
@@ -328,6 +348,12 @@ def save_outputs(
         "w"
     ) as f:
         json.dump(products_monthly_json, f)
+
+    with open(
+        f"{OUTPUT_DIR}/products_monthly_top100.json",
+        "w"
+    ) as f:
+        json.dump(products_monthly_top100_json, f)
     
     print("JSON files saved in /data")
 
