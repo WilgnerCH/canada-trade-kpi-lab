@@ -193,10 +193,10 @@ def save_outputs(monthly, country, products):
         json.dump(monthly_json, f)
 
     with open(f"{OUTPUT_DIR}/countries.json", "w") as f:
-        json.dump(countries_json[:20], f)
+        json.dump(countries_json, f)
 
     with open(f"{OUTPUT_DIR}/products.json", "w") as f:
-        json.dump(products_json[:20], f)
+        json.dump(products_json, f)
 
     print("💾 JSON files saved in /data")
 
