@@ -25,10 +25,11 @@ def json_to_csv(json_file, csv_file):
 # Arquivos
 files = [
     "countries",
-    "countries_monthly",
     "monthly",
     "products",
-    "products_top100"
+    "products_top100",
+    "countries_monthly",
+    "products_monthly"
 ]
 
 for file in files:
