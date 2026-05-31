@@ -5,6 +5,109 @@ import re
 from hs_lookup import get_hs_lookup, match_hs_description
 
 # =========================
+# HS2 NAMES
+# =========================
+
+HS2_NAMES = {
+    "01": "Live animals",
+    "02": "Meat and edible meat offal",
+    "03": "Fish and seafood",
+    "04": "Dairy products",
+    "05": "Animal products n.e.s.",
+    "06": "Live trees and plants",
+    "07": "Vegetables",
+    "08": "Fruit and nuts",
+    "09": "Coffee, tea and spices",
+    "10": "Cereals",
+    "11": "Milling products",
+    "12": "Oil seeds",
+    "13": "Lac, gums and resins",
+    "14": "Vegetable plaiting materials",
+    "15": "Animal or vegetable fats and oils",
+    "16": "Prepared meat and fish",
+    "17": "Sugars and confectionery",
+    "18": "Cocoa products",
+    "19": "Prepared cereal products",
+    "20": "Prepared vegetables and fruits",
+    "21": "Miscellaneous food preparations",
+    "22": "Beverages and spirits",
+    "23": "Food industry residues",
+    "24": "Tobacco products",
+    "25": "Salt, sulphur, stone, cement",
+    "26": "Ores, slag and ash",
+    "27": "Mineral fuels and oils",
+    "28": "Inorganic chemicals",
+    "29": "Organic chemicals",
+    "30": "Pharmaceutical products",
+    "31": "Fertilizers",
+    "32": "Tanning and dye extracts",
+    "33": "Essential oils and cosmetics",
+    "34": "Soap and cleaning products",
+    "35": "Protein substances",
+    "36": "Explosives",
+    "37": "Photographic goods",
+    "38": "Miscellaneous chemical products",
+    "39": "Plastics",
+    "40": "Rubber",
+    "41": "Raw hides and skins",
+    "42": "Leather goods",
+    "43": "Furskins",
+    "44": "Wood products",
+    "45": "Cork products",
+    "46": "Basketware",
+    "47": "Pulp of wood",
+    "48": "Paper and paperboard",
+    "49": "Printed books and media",
+    "50": "Silk",
+    "51": "Wool",
+    "52": "Cotton",
+    "53": "Vegetable textile fibres",
+    "54": "Man-made filaments",
+    "55": "Man-made staple fibres",
+    "56": "Wadding and felt",
+    "57": "Carpets",
+    "58": "Special woven fabrics",
+    "59": "Impregnated textiles",
+    "60": "Knitted fabrics",
+    "61": "Knitted apparel",
+    "62": "Woven apparel",
+    "63": "Other textile articles",
+    "64": "Footwear",
+    "65": "Headgear",
+    "66": "Umbrellas",
+    "67": "Feathers and artificial flowers",
+    "68": "Stone and cement articles",
+    "69": "Ceramic products",
+    "70": "Glass products",
+    "71": "Precious stones and metals",
+    "72": "Iron and steel",
+    "73": "Articles of iron and steel",
+    "74": "Copper",
+    "75": "Nickel",
+    "76": "Aluminium",
+    "78": "Lead",
+    "79": "Zinc",
+    "80": "Tin",
+    "81": "Other base metals",
+    "82": "Tools and cutlery",
+    "83": "Miscellaneous metal articles",
+    "84": "Machinery and mechanical appliances",
+    "85": "Electrical machinery",
+    "86": "Railway equipment",
+    "87": "Vehicles",
+    "88": "Aircraft and spacecraft",
+    "89": "Ships and boats",
+    "90": "Optical and medical instruments",
+    "91": "Clocks and watches",
+    "92": "Musical instruments",
+    "93": "Arms and ammunition",
+    "94": "Furniture",
+    "95": "Toys and sports equipment",
+    "96": "Miscellaneous manufactured articles",
+    "97": "Works of art"
+}
+
+# =========================
 # CONFIG
 # =========================
 
@@ -394,6 +497,10 @@ def save_outputs(
     hs2_json = [
         {
             "hs2": row["hs2"],
+            "hs2_name": HS2_NAMES.get(
+                str(row["hs2"]).zfill(2),
+                "Unknown"
+            ),
             "imports": float(row.get("Import", 0)),
             "exports": float(row.get("Export", 0)),
             "total": float(
@@ -434,6 +541,10 @@ def save_outputs(
         {
             "date": row["date"],
             "hs2": row["hs2"],
+            "hs2_name": HS2_NAMES.get(
+                str(row["hs2"]).zfill(2),
+                "Unknown"
+            ),
             "imports": float(row.get("Import", 0)),
             "exports": float(row.get("Export", 0)),
             "total": float(
