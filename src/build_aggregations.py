@@ -384,6 +384,10 @@ def save_outputs(
         reverse=True
     )
     
+    print(
+        f"HS2 records: {len(hs2_json)}"
+    )
+    
     # -------------------------
     # SAVE FILES
     # -------------------------
