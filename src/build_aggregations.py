@@ -87,7 +87,22 @@ def country_monthly_summary(df):
 
     print("Country monthly summary created")
     return country_monthly
-    
+
+# =========================
+# PRODUCTS MONTHLY SUMMARY
+# =========================
+
+def products_monthly_summary(df):
+
+    products_monthly = (
+        df.groupby(["date", "HS", "trade_type"])["Value"]
+        .sum()
+        .reset_index()
+    )
+
+    print("Products monthly summary created")
+    return products_monthly
+
 # =========================
 # PRODUCTS SUMMARY
 # =========================
@@ -122,7 +137,13 @@ def clean_product_name(name):
 # SAVE OUTPUTS
 # =========================
 
-def save_outputs(monthly, country, products, country_monthly):
+def save_outputs(
+    monthly,
+    country,
+    products,
+    country_monthly,
+    products_monthly
+):
 
     print("Loading HS lookup...")
     hs_lookup = get_hs_lookup()
@@ -203,6 +224,52 @@ def save_outputs(monthly, country, products, country_monthly):
         countries_monthly_json,
         key=lambda x: (x["date"], -x["total"])
     )    
+
+    # -------------------------
+    # PRODUCTS MONTHLY JSON
+    # -------------------------
+    
+    products_monthly_pivot = (
+        products_monthly
+        .pivot_table(
+            index=["date", "HS"],
+            columns="trade_type",
+            values="Value",
+            aggfunc="sum"
+        )
+        .fillna(0)
+        .reset_index()
+    )
+    
+    products_monthly_json = []
+    
+    for _, row in products_monthly_pivot.iterrows():
+    
+        hs_code = row["HS"]
+    
+        raw_name = match_hs_description(
+            hs_code,
+            hs_lookup
+        )
+    
+        name = clean_product_name(raw_name)
+    
+        products_monthly_json.append({
+            "date": row["date"],
+            "hs": str(hs_code),
+            "name": name,
+            "imports": float(row.get("Import", 0)),
+            "exports": float(row.get("Export", 0)),
+            "total": float(
+                row.get("Import", 0)
+                + row.get("Export", 0)
+            )
+        })
+    
+    print(
+        f"Products monthly records: "
+        f"{len(products_monthly_json)}"
+    )
     
     # -------------------------
     # PRODUCTS JSON (COM NOME LIMPO)
@@ -256,6 +323,12 @@ def save_outputs(monthly, country, products, country_monthly):
     with open(f"{OUTPUT_DIR}/products_top100.json", "w") as f:
         json.dump(products_top100_json, f)
 
+    with open(
+        f"{OUTPUT_DIR}/products_monthly.json",
+        "w"
+    ) as f:
+        json.dump(products_monthly_json, f)
+    
     print("JSON files saved in /data")
 
 
@@ -273,8 +346,15 @@ def main():
     c = country_summary(df_clean)
     p = product_summary(df_clean)
     cm = country_monthly_summary(df_clean)
+    pm = products_monthly_summary(df_clean)
     
-    save_outputs(m, c, p, cm)
+    save_outputs(
+        m,
+        c,
+        p,
+        cm,
+        pm
+    )
 
     print("Pipeline finished successfully!")
 
