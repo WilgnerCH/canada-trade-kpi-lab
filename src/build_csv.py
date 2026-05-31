@@ -25,6 +25,7 @@ def json_to_csv(json_file, csv_file):
 # Arquivos
 files = [
     "countries",
+    "countries_monthly",
     "monthly",
     "products",
     "products_top100"
@@ -33,7 +34,7 @@ files = [
 for file in files:
     json_path = os.path.join(DATA_DIR, f"{file}.json")
     csv_path = os.path.join(CSV_DIR, f"{file}.csv")
-    
+
     if os.path.exists(json_path):
         json_to_csv(json_path, csv_path)
         print(f"✅ Converted {file}.json → CSV")
