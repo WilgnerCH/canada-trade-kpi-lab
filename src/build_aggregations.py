@@ -129,6 +129,31 @@ def hs2_summary(df):
     return hs2
 
 # =========================
+# HS2 MONTHLY SUMMARY
+# =========================
+
+def hs2_monthly_summary(df):
+
+    df = df.copy()
+
+    df["hs2"] = (
+        df["HS"]
+        .astype(str)
+        .str[:2]
+    )
+
+    hs2_monthly = (
+        df.groupby(
+            ["date", "hs2", "trade_type"]
+        )["Value"]
+        .sum()
+        .reset_index()
+    )
+
+    print("HS2 monthly summary created")
+    return hs2_monthly
+
+# =========================
 # PRODUCTS SUMMARY
 # =========================
 
@@ -168,7 +193,8 @@ def save_outputs(
     products,
     country_monthly,
     products_monthly,
-    hs2
+    hs2,
+    hs2_monthly
 ):
 
     print("Loading HS lookup...")
@@ -387,6 +413,41 @@ def save_outputs(
     print(
         f"HS2 records: {len(hs2_json)}"
     )
+
+    # -------------------------
+    # HS2 MONTHLY JSON
+    # -------------------------
+    
+    hs2_monthly_pivot = (
+        hs2_monthly
+        .pivot_table(
+            index=["date", "hs2"],
+            columns="trade_type",
+            values="Value",
+            aggfunc="sum"
+        )
+        .fillna(0)
+        .reset_index()
+    )
+    
+    hs2_monthly_json = [
+        {
+            "date": row["date"],
+            "hs2": row["hs2"],
+            "imports": float(row.get("Import", 0)),
+            "exports": float(row.get("Export", 0)),
+            "total": float(
+                row.get("Import", 0)
+                + row.get("Export", 0)
+            )
+        }
+        for _, row in hs2_monthly_pivot.iterrows()
+    ]
+    
+    print(
+        f"HS2 monthly records: "
+        f"{len(hs2_monthly_json)}"
+    )
     
     # -------------------------
     # SAVE FILES
@@ -423,9 +484,14 @@ def save_outputs(
         "w"
     ) as f:
         json.dump(hs2_json, f)
+
+    with open(
+        f"{OUTPUT_DIR}/hs2_monthly.json",
+        "w"
+    ) as f:
+        json.dump(hs2_monthly_json, f)
     
     print("JSON files saved in /data")
-
 
 # =========================
 # MAIN
@@ -443,6 +509,7 @@ def main():
     cm = country_monthly_summary(df_clean)
     pm = products_monthly_summary(df_clean)
     h2 = hs2_summary(df_clean)
+    h2m = hs2_monthly_summary(df_clean)
     
     save_outputs(
         m,
@@ -450,7 +517,8 @@ def main():
         p,
         cm,
         pm,
-        h2
+        h2,
+        h2m
     )
 
     print("Pipeline finished successfully!")
