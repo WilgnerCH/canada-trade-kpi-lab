@@ -19,9 +19,9 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # =========================
 
 def load_data():
-    print("📥 Loading dataset...")
+    print("Loading dataset...")
     df = pd.read_parquet(DATA_URL)
-    print(f"✅ Dataset loaded: {len(df)} rows")
+    print(f"Dataset loaded: {len(df)} rows")
     return df
 
 
@@ -30,7 +30,7 @@ def load_data():
 # =========================
 
 def clean_data(df):
-    print("🧹 Cleaning data (removing duplicates)...")
+    print("Cleaning data (removing duplicates)...")
 
     df_clean = (
         df.groupby(["date", "trade_type", "Country", "HS"])["Value"]
@@ -38,7 +38,7 @@ def clean_data(df):
         .reset_index()
     )
 
-    print(f"✅ Clean dataset: {len(df_clean)} rows")
+    print(f"Clean dataset: {len(df_clean)} rows")
     return df_clean
 
 
@@ -54,7 +54,7 @@ def monthly_summary(df):
         .reset_index()
     )
 
-    print("📊 Monthly summary created")
+    print("Monthly summary created")
     return monthly
 
 
@@ -70,10 +70,24 @@ def country_summary(df):
         .reset_index()
     )
 
-    print("🌍 Country summary created")
+    print("Country summary created")
     return country
 
+# =========================
+# COUNTRY MONTHLY SUMMARY
+# =========================
 
+def country_monthly_summary(df):
+
+    country_monthly = (
+        df.groupby(["date", "Country", "trade_type"])["Value"]
+        .sum()
+        .reset_index()
+    )
+
+    print("Country monthly summary created")
+    return country_monthly
+    
 # =========================
 # PRODUCTS SUMMARY
 # =========================
@@ -86,12 +100,12 @@ def product_summary(df):
         .reset_index()
     )
 
-    print("📦 Product summary created")
+    print("Product summary created")
     return products
 
 
 # =========================
-# 🧼 CLEAN PRODUCT NAME
+# CLEAN PRODUCT NAME
 # =========================
 
 def clean_product_name(name):
@@ -108,9 +122,9 @@ def clean_product_name(name):
 # SAVE OUTPUTS
 # =========================
 
-def save_outputs(monthly, country, products):
+def save_outputs(monthly, country, products, country_monthly):
 
-    print("🔗 Loading HS lookup...")
+    print("Loading HS lookup...")
     hs_lookup = get_hs_lookup()
 
     # -------------------------
@@ -156,6 +170,36 @@ def save_outputs(monthly, country, products):
     countries_json = sorted(countries_json, key=lambda x: x["total"], reverse=True)
 
     # -------------------------
+    # COUNTRIES MONTHLY JSON
+    # -------------------------
+
+    country_monthly_pivot = (
+        country_monthly
+        .pivot_table(
+            index=["date", "Country"],
+            columns="trade_type",
+            values="Value",
+            aggfunc="sum"
+        )
+        .fillna(0)
+        .reset_index()
+    )
+
+    countries_monthly_json = [
+        {
+            "date": row["date"],
+            "country": row["Country"],
+            "imports": float(row.get("Import", 0)),
+            "exports": float(row.get("Export", 0)),
+            "total": float(
+                row.get("Import", 0) +
+                row.get("Export", 0)
+            )
+        }
+        for _, row in country_monthly_pivot.iterrows()
+    ]
+    
+    # -------------------------
     # PRODUCTS JSON (COM NOME LIMPO)
     # -------------------------
     products_pivot = (
@@ -197,6 +241,9 @@ def save_outputs(monthly, country, products):
     
     with open(f"{OUTPUT_DIR}/countries.json", "w") as f:
         json.dump(countries_json, f)
+
+    with open(f"{OUTPUT_DIR}/countries_monthly.json", "w") as f:
+        json.dump(countries_monthly_json, f)
     
     with open(f"{OUTPUT_DIR}/products.json", "w") as f:
         json.dump(products_json, f)
@@ -204,7 +251,7 @@ def save_outputs(monthly, country, products):
     with open(f"{OUTPUT_DIR}/products_top100.json", "w") as f:
         json.dump(products_top100_json, f)
 
-    print("💾 JSON files saved in /data")
+    print("JSON files saved in /data")
 
 
 # =========================
@@ -220,10 +267,11 @@ def main():
     m = monthly_summary(df_clean)
     c = country_summary(df_clean)
     p = product_summary(df_clean)
+    cm = country_monthly_summary(df_clean)
+    
+    save_outputs(m, c, p, cm)
 
-    save_outputs(m, c, p)
-
-    print("🚀 Pipeline finished successfully!")
+    print("Pipeline finished successfully!")
 
 
 if __name__ == "__main__":
