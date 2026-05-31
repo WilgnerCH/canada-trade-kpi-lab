@@ -23,7 +23,12 @@ def json_to_csv(json_file, csv_file):
         writer.writerows(data)
 
 # Arquivos
-files = ["countries", "monthly", "products"]
+files = [
+    "countries",
+    "monthly",
+    "products",
+    "products_top100"
+]
 
 for file in files:
     json_path = os.path.join(DATA_DIR, f"{file}.json")
