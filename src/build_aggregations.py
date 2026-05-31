@@ -444,6 +444,15 @@ def save_outputs(
         for _, row in hs2_monthly_pivot.iterrows()
     ]
     
+    # Ordena por mês e depois pelo maior total
+    hs2_monthly_json = sorted(
+        hs2_monthly_json,
+        key=lambda x: (
+            x["date"],
+            -x["total"]
+        )
+    )
+    
     print(
         f"HS2 monthly records: "
         f"{len(hs2_monthly_json)}"
