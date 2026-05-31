@@ -198,6 +198,11 @@ def save_outputs(monthly, country, products, country_monthly):
         }
         for _, row in country_monthly_pivot.iterrows()
     ]
+
+    countries_monthly_json = sorted(
+        countries_monthly_json,
+        key=lambda x: (x["date"], -x["total"])
+    )    
     
     # -------------------------
     # PRODUCTS JSON (COM NOME LIMPO)
