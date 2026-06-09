@@ -85,7 +85,7 @@ tbody tr:hover{background:var(--gl);}
 #country-panel.visible{display:block;}
 .cp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
 .cp-title{display:flex;align-items:center;gap:10px;}
-.cp-flag{display:flex;align-items:center;}
+.cp-flag{display:flex;align-items:center;} .flag-img{border-radius:2px;vertical-align:middle;margin-right:5px;box-shadow:0 1px 2px rgba(0,0,0,.2);}
 .cp-title h2{font-size:17px;font-weight:700;color:var(--gd);}
 .cp-title p{font-size:12px;color:var(--muted);margin-top:2px;}
 .cp-close{background:none;border:1px solid var(--bdr);border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;color:var(--muted);}
@@ -1798,17 +1798,413 @@ let defaultFrom='', defaultTo='';
 let charts={};
 
 /* ── FLAGS & NAMES ── */
-/* Flag images via flagcdn.com — works on all platforms including Windows */
-function flagImg(code, size=20){
-  if(!code)return'';
-  const c=code.toLowerCase();
-  return `<img src="https://flagcdn.com/w${size}/${c}.png" 
-    srcset="https://flagcdn.com/w${size*2}/${c}.png 2x"
-    width="${size}" height="${Math.round(size*0.75)}" 
-    alt="${code}" 
-    style="border-radius:2px;vertical-align:middle;margin-right:5px;box-shadow:0 1px 2px rgba(0,0,0,.2)"
-    onerror="this.style.display='none'">`;
+function flagImg(code,size){
+  size=size||20;
+  if(!code)return '';
+  var c=code.toLowerCase();
+  var h=Math.round(size*0.75);
+  var el=document.createElement('img');
+  el.src='https://flagcdn.com/w'+size+'/'+c+'.png';
+  el.setAttribute('srcset','https://flagcdn.com/w'+(size*2)+'/'+c+'.png 2x');
+  el.width=size; el.height=h;
+  el.alt=code; el.className='flag-img';
+  el.onerror=function(){this.style.display='none';};
+  return el.outerHTML;
 }
-/* Keep FLAGS for panel emoji fallback on mobile (still looks good there) */
 const FLAGS={US:'🇺🇸',CN:'🇨🇳',GB:'🇬🇧',JP:'🇯🇵',DE:'🇩🇪',FR:'🇫🇷',MX:'🇲🇽',KR:'🇰🇷',IN:'🇮🇳',NL:'🇳🇱',BE:'🇧🇪',IT:'🇮🇹',AU:'🇦🇺',BR:'🇧🇷',CH:'🇨🇭',SE:'🇸🇪',NO:'🇳🇴',ES:'🇪🇸',TW:'🇹🇼',SG:'🇸🇬',HK:'🇭🇰',SA:'🇸🇦',ZA:'🇿🇦',VN:'🇻🇳',PE:'🇵🇪',ID:'🇮🇩',MY:'🇲🇾',PL:'🇵🇱',AR:'🇦🇷',CL:'🇨🇱',TR:'🇹🇷',IE:'🇮🇪',DK:'🇩🇰',AT:'🇦🇹',FI:'🇫🇮',PT:'🇵🇹',NZ:'🇳🇿',NG:'🇳🇬',AE:'🇦🇪',CO:'🇨🇴'};
-const CNAMES={US:'United States',CN:'China',GB:'United Kingdom',JP:'Japan',DE:'Germany',FR:'France',MX:'Mexico',KR:'South Korea',IN:'India',NL:'Netherlands',BE:'Belgium',IT:'Italy',AU:'Australia',BR:'Brazil',CH:'Switzerland',SE:'Sweden',NO:'Norway',ES:'Spain',TW:'Taiwan',SG:'Singapore',HK:'Hong Kong
+const CNAMES={US:'United States',CN:'China',GB:'United Kingdom',JP:'Japan',DE:'Germany',FR:'France',MX:'Mexico',KR:'South Korea',IN:'India',NL:'Netherlands',BE:'Belgium',IT:'Italy',AU:'Australia',BR:'Brazil',CH:'Switzerland',SE:'Sweden',NO:'Norway',ES:'Spain',TW:'Taiwan',SG:'Singapore',HK:'Hong Kong',SA:'Saudi Arabia',ZA:'South Africa',VN:'Vietnam',PE:'Peru',ID:'Indonesia',MY:'Malaysia',PL:'Poland',AR:'Argentina',CL:'Chile',TR:'Turkey',IE:'Ireland',DK:'Denmark',AT:'Austria',FI:'Finland',PT:'Portugal',NZ:'New Zealand',NG:'Nigeria',AE:'UAE',CO:'Colombia',CA:'Canada'};
+const GEO={US:'United States of America',CN:'China',GB:'United Kingdom',JP:'Japan',DE:'Germany',FR:'France',MX:'Mexico',KR:'South Korea',IN:'India',NL:'Netherlands',BE:'Belgium',IT:'Italy',AU:'Australia',BR:'Brazil',CH:'Switzerland',SE:'Sweden',NO:'Norway',ES:'Spain',ZA:'South Africa',VN:'Vietnam',PE:'Peru',ID:'Indonesia',MY:'Malaysia',PL:'Poland',AR:'Argentina',CL:'Chile',TR:'Turkey',IE:'Ireland',DK:'Denmark',AT:'Austria',FI:'Finland',NZ:'New Zealand',NG:'Nigeria',CO:'Colombia',SA:'Saudi Arabia'};
+
+/* ── NUMBER FORMATTING ── */
+function fmt(n){
+  if(n==null||isNaN(n))return'—';
+  const a=Math.abs(n),s=n<0?'-':'';
+  if(a>=1e12)return s+'$'+(a/1e12).toFixed(2)+'T';
+  if(a>=1e9) return s+'$'+(a/1e9).toFixed(2)+'B';
+  if(a>=1e6) return s+'$'+(a/1e6).toFixed(1)+'M';
+  return(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString();
+}
+function toB(n){return n?+(n/1e9).toFixed(3):0;}
+function pct(n){return(n>=0?'+':'')+n.toFixed(1)+'%';}
+
+/* ── CSV PARSER ── */
+function parseCSV(text){
+  const lines=text.trim().split('\n').filter(l=>l.trim());
+  const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
+  return lines.slice(1).map(line=>{
+    const vals=[];let cur='',inQ=false;
+    for(const ch of line){
+      if(ch==='"'){inQ=!inQ;}
+      else if(ch===','&&!inQ){vals.push(cur.trim());cur='';}
+      else cur+=ch;
+    }
+    vals.push(cur.trim());
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=vals[i]||'');
+    return obj;
+  });
+}
+
+async function fetchCSV(url){
+  const r=await fetch(url+'?t='+Date.now());
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return parseCSV(await r.text());
+}
+
+/* ── LOAD ALL DATA ── */
+async function load(){
+  document.getElementById('loading').style.display='flex';
+  try{
+    const [monthly,countries,cm,hs2s,hs2m]=await Promise.all([
+      fetchCSV(SOURCES.monthly),
+      fetchCSV(SOURCES.countries),
+      fetchCSV(SOURCES.countries_monthly),
+      fetchCSV(SOURCES.hs2_summary),
+      fetchCSV(SOURCES.hs2_monthly),
+    ]);
+    D.monthly=monthly.map(r=>({date:r.date,imports:+r.imports,exports:+r.exports,balance:+r.balance}));
+    D.countries=countries.map(r=>({country:r.country,imports:+r.imports,exports:+r.exports,total:+r.total}));
+    D.countries_monthly=cm.map(r=>({date:r.date,country:r.country,imports:+r.imports,exports:+r.exports,total:+r.total}));
+    D.hs2_summary=hs2s.map(r=>({hs2:r.hs2,name:r.hs2_name,imports:+r.imports,exports:+r.exports,total:+r.total}));
+    D.hs2_monthly=hs2m.map(r=>({date:r.date,hs2:r.hs2,name:r.hs2_name,imports:+r.imports,exports:+r.exports,total:+r.total}));
+
+    /* set default date range: current year Jan → latest */
+    const dates=D.monthly.map(r=>r.date).sort();
+    if(dates.length){
+      const latest=dates[dates.length-1];
+      const yr=latest.substring(0,4);
+      defaultFrom=yr+'-01'; defaultTo=latest;
+      document.getElementById('f-from').value=defaultFrom;
+      document.getElementById('f-to').value=defaultTo;
+      document.getElementById('upd-date').textContent=latest;
+    }
+  }catch(e){
+    document.getElementById('err').style.display='block';
+    document.getElementById('err').textContent='Error loading data: '+e.message+'. Please try refreshing.';
+  }
+  document.getElementById('loading').style.display='none';
+  af();
+}
+
+/* ── FILTERS ── */
+function resetFilters(){
+  document.getElementById('f-type').value='All';
+  document.getElementById('f-from').value=defaultFrom;
+  document.getElementById('f-to').value=defaultTo;
+  af();
+}
+
+function getRange(){
+  return{type:document.getElementById('f-type').value,
+         from:document.getElementById('f-from').value,
+         to:document.getElementById('f-to').value};
+}
+
+function filterMonthly(fr,to){
+  return D.monthly.filter(r=>(!fr||r.date>=fr)&&(!to||r.date<=to));
+}
+function filterCM(fr,to){
+  return D.countries_monthly.filter(r=>(!fr||r.date>=fr)&&(!to||r.date<=to));
+}
+function filterHS2M(fr,to){
+  return D.hs2_monthly.filter(r=>(!fr||r.date>=fr)&&(!to||r.date<=to));
+}
+
+function af(){
+  const {type,from,to}=getRange();
+  const parts=[];
+  if(type!=='All')parts.push(type+'s only');
+  if(from||to)parts.push((from||'start')+' → '+(to||'latest'));
+  const inf=parts.length?parts.join(' · '):'All data';
+  ['overview','monthly','countries','products'].forEach(t=>{
+    const el=document.getElementById('fi-'+t);if(el)el.textContent=inf;
+  });
+  ra();
+}
+
+function ra(){ro();rm();rc();rhs();}
+
+/* ══════════════════ OVERVIEW ══════════════════ */
+function ro(){
+  const {type,from,to}=getRange();
+  const rows=filterMonthly(from,to);
+  let exp=0,imp=0;
+  rows.forEach(r=>{
+    if(type==='All'||type==='Export')exp+=r.exports;
+    if(type==='All'||type==='Import')imp+=r.imports;
+  });
+  const bal=exp-imp,tot=exp+imp;
+
+  document.getElementById('kpi-grid').innerHTML=[
+    {l:'Total exports',v:fmt(exp),c:'',vc:''},
+    {l:'Total imports',v:fmt(imp),c:'rt',vc:''},
+    {l:'Trade balance',v:fmt(bal),c:'gt',vc:bal>=0?'kpi-up':'kpi-down'},
+    {l:'Total trade',v:fmt(tot),c:'',vc:''},
+    {l:'Months in view',v:rows.length,sub:'periods',c:'',vc:''},
+    {l:'Data updated',v:defaultTo||'—',sub:'latest month',c:'',vc:''},
+  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value ${k.vc}">${k.v}</div>${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
+
+  const ds=rows.map(r=>r.date);
+  dc('c-tl');
+  charts['c-tl']=new Chart(document.getElementById('c-tl'),{type:'line',data:{labels:ds,datasets:[
+    {label:'Exports',data:rows.map(r=>toB(r.exports)),borderColor:'#1a5c2e',backgroundColor:'rgba(26,92,46,.07)',tension:.3,pointRadius:ds.length>18?0:3,fill:false},
+    {label:'Imports',data:rows.map(r=>toB(r.imports)),borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.07)',tension:.3,pointRadius:ds.length>18?0:3,fill:false},
+    {label:'Balance',data:rows.map(r=>toB(r.balance)),borderColor:'#c0392b',borderDash:[4,3],tension:.3,pointRadius:0,fill:false},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{autoSkip:true,maxTicksLimit:14,font:{size:11}},grid:{display:false}},
+            y:{ticks:{callback:v=>(v>=0?'$'+v:'-$'+Math.abs(v))+'B',font:{size:11}}}}}});
+
+  dc('c-pie');
+  charts['c-pie']=new Chart(document.getElementById('c-pie'),{type:'doughnut',data:{
+    labels:['Exports','Imports'],
+    datasets:[{data:[toB(exp),toB(imp)],backgroundColor:['#1a5c2e','#f5a623'],borderWidth:0}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:12},boxWidth:10}}}}});
+
+  /* top10 from countries filtered by date range */
+  const cm=filterCM(from,to);
+  const byC={};
+  cm.forEach(r=>{
+    if(!byC[r.country])byC[r.country]={e:0,i:0};
+    if(type!=='Import')byC[r.country].e+=r.exports;
+    if(type!=='Export')byC[r.country].i+=r.imports;
+  });
+  const top10=Object.entries(byC).filter(([c])=>c!=='CA').map(([c,v])=>({c,t:v.e+v.i})).sort((a,b)=>b.t-a.t).slice(0,10);
+  dc('c-tc');
+  charts['c-tc']=new Chart(document.getElementById('c-tc'),{type:'bar',data:{
+    labels:top10.map(r=>CNAMES[r.c]||r.c),
+    datasets:[{label:'Total',data:top10.map(r=>toB(r.t)),backgroundColor:'#1a5c2e'}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},
+    scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:11}}},y:{ticks:{font:{size:11}}}}}});
+}
+
+/* ══════════════════ MONTHLY ══════════════════ */
+function rm(){
+  const {type,from,to}=getRange();
+  const rows=filterMonthly(from,to);
+  const last=rows[rows.length-1]||{};
+  const prev=rows[rows.length-2];
+  const lastTot=(last.exports||0)+(last.imports||0);
+  const prevTot=prev?(prev.exports+prev.imports):null;
+  const mom=prevTot?((lastTot-prevTot)/prevTot*100):null;
+
+  document.getElementById('m-kpi').innerHTML=[
+    {l:'Latest period',v:last.date||'—',c:'',vc:''},
+    {l:'Latest exports',v:fmt(last.exports),c:'',vc:''},
+    {l:'Latest imports',v:fmt(last.imports),c:'rt',vc:''},
+    {l:'Latest balance',v:fmt(last.balance),c:'gt',vc:(last.balance||0)>=0?'kpi-up':'kpi-down'},
+    {l:'MoM change',v:mom!=null?pct(mom):'—',c:'',vc:(mom||0)>=0?'kpi-up':'kpi-down'},
+  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value ${k.vc}">${k.v}</div></div>`).join('');
+
+  const ds=rows.map(r=>r.date);
+  const moms=rows.map((r,i)=>{
+    if(i===0)return 0;
+    const pt=(rows[i-1].exports+rows[i-1].imports);
+    return pt?+((((r.exports+r.imports)-pt)/pt*100).toFixed(1)):0;
+  });
+  dc('c-mom');
+  charts['c-mom']=new Chart(document.getElementById('c-mom'),{type:'bar',data:{
+    labels:ds,datasets:[{label:'MoM%',data:moms,backgroundColor:moms.map(v=>v>=0?'rgba(26,92,46,.75)':'rgba(192,57,43,.75)')}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{autoSkip:true,maxTicksLimit:14,font:{size:11}},grid:{display:false}},
+            y:{ticks:{callback:v=>v+'%',font:{size:11}}}}}});
+
+  dc('c-ms');
+  charts['c-ms']=new Chart(document.getElementById('c-ms'),{type:'bar',data:{labels:ds,datasets:[
+    {label:'Exports',data:rows.map(r=>toB(r.exports)),backgroundColor:'#1a5c2e',stack:'s'},
+    {label:'Imports',data:rows.map(r=>toB(r.imports)),backgroundColor:'#f5a623',stack:'s'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{stacked:true,ticks:{autoSkip:true,maxTicksLimit:14,font:{size:11}},grid:{display:false}},
+            y:{stacked:true,ticks:{callback:v=>'$'+v+'B',font:{size:11}}}}}});
+
+  document.getElementById('m-tbody').innerHTML=[...rows].reverse().map((r,i,arr)=>{
+    const prow=arr[i+1];
+    const t=r.exports+r.imports,pt=prow?(prow.exports+prow.imports):null;
+    const m=pt?((t-pt)/pt*100):null;
+    return`<tr><td><strong>${r.date}</strong></td><td>${fmt(r.exports)}</td><td>${fmt(r.imports)}</td>
+    <td style="color:${r.balance>=0?'#16a34a':'#c0392b'}">${fmt(r.balance)}</td>
+    <td>${fmt(t)}</td>
+    <td style="color:${(m||0)>=0?'#16a34a':'#c0392b'}">${m!=null?pct(m):'—'}</td></tr>`;
+  }).join('');
+}
+
+/* ══════════════════ COUNTRIES ══════════════════ */
+function rc(){
+  const {type,from,to}=getRange();
+  const cm=filterCM(from,to);
+  const byC={};
+  cm.forEach(r=>{
+    if(r.country==='CA')return;
+    if(!byC[r.country])byC[r.country]={e:0,i:0};
+    if(type!=='Import')byC[r.country].e+=r.exports;
+    if(type!=='Export')byC[r.country].i+=r.imports;
+  });
+  const tot=Object.values(byC).reduce((s,v)=>s+v.e+v.i,0);
+  const sorted=Object.entries(byC).map(([c,v])=>({c,e:v.e,i:v.i,t:v.e+v.i})).sort((a,b)=>b.t-a.t);
+  const top20=sorted.slice(0,20);
+  const rank1=sorted[0]?.c, rank2=sorted[1]?.c;
+
+  const hpx=Math.max(500,top20.length*30+80);
+  document.getElementById('c-cw').style.height=hpx+'px';
+  dc('c-countries');
+  charts['c-countries']=new Chart(document.getElementById('c-countries'),{type:'bar',data:{
+    labels:top20.map(r=>CNAMES[r.c]||r.c),
+    datasets:[
+      {label:'Exports',data:top20.map(r=>toB(r.e)),backgroundColor:'#1a5c2e',stack:'s'},
+      {label:'Imports',data:top20.map(r=>toB(r.i)),backgroundColor:'#f5a623',stack:'s'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},
+    scales:{x:{stacked:true,ticks:{callback:v=>'$'+v+'B',font:{size:11}}},y:{stacked:true,ticks:{font:{size:11}}}},
+    onClick:(e,els)=>{if(els.length)openPanel(top20[els[0].index].c,sorted);}
+  }});
+
+  rmap(sorted,rank1,rank2);
+
+  document.getElementById('c-tbody').innerHTML=sorted.map(r=>`<tr style="cursor:pointer" onclick="openPanel('${r.c}',null)">
+    <td><strong>${flagImg(r.c)}${CNAMES[r.c]||r.c}</strong></td>
+    <td>${fmt(r.e)}</td><td>${fmt(r.i)}</td>
+    <td style="color:${r.e>=r.i?'#16a34a':'#c0392b'}">${fmt(r.e-r.i)}</td>
+    <td><div style="display:flex;align-items:center;gap:6px">
+      <div class="bi" style="width:72px"><div class="bif" style="width:${Math.min(100,+(r.t/tot*400).toFixed(0))}%"></div></div>
+      ${(r.t/tot*100).toFixed(1)}%</div></td>
+    <td>${r.e>r.i?'<span class="badge bs">Surplus</span>':'<span class="badge bd">Deficit</span>'}</td>
+  </tr>`).join('');
+}
+
+function rmap(sorted,rank1,rank2){
+  const wrap=document.getElementById('map-wrap');wrap.innerHTML='';
+  const geoToCode={};Object.entries(GEO).forEach(([c,n])=>geoToCode[n]=c);
+  const tradeSet=new Set(sorted.map(r=>r.c));
+  const svg=d3.select(wrap).append('svg').attr('viewBox','0 0 900 460').attr('width','100%').style('cursor','pointer');
+  d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w=>{
+    const proj=d3.geoNaturalEarth1().scale(140).translate([450,240]);
+    const path=d3.geoPath(proj);
+    svg.selectAll('path').data(topojson.feature(w,w.objects.countries).features).join('path')
+      .attr('d',path).attr('stroke','#fff').attr('stroke-width',.5)
+      .attr('fill',d=>{
+        const n=d.properties?.name||'',c=geoToCode[n];
+        if(!c||!tradeSet.has(c))return'#d9eee1';
+        if(c===rank1)return'#1a5c2e';
+        if(c===rank2)return'#f5a623';
+        return'#a8d5b5';
+      })
+      .on('mouseover',function(ev,d){const c=geoToCode[d.properties?.name||''];if(c&&tradeSet.has(c))d3.select(this).attr('opacity',.7);})
+      .on('mouseout',function(){d3.select(this).attr('opacity',1);})
+      .on('click',function(ev,d){const c=geoToCode[d.properties?.name||''];if(c&&tradeSet.has(c))openPanel(c,null);})
+      .append('title').text(d=>{
+        const n=d.properties?.name||'',c=geoToCode[n];
+        const e=sorted.find(r=>r.c===c);
+        return e?n+'\nTotal: '+fmt(e.t)+'\nExports: '+fmt(e.e)+'\nImports: '+fmt(e.i)+'\n→ Click to explore':n+': no data';
+      });
+  }).catch(()=>{wrap.innerHTML='<p style="color:var(--muted);padding:20px;text-align:center">Map unavailable — see table below.</p>';});
+}
+
+/* ── openPanel: scroll to between map and top20 ── */
+function openPanel(code, sortedOverride){
+  const {from,to}=getRange();
+  const cRows=D.countries_monthly.filter(r=>r.country===code&&(!from||r.date>=from)&&(!to||r.date<=to));
+  const dates=[...new Set(cRows.map(r=>r.date))].sort();
+  const byDate={};
+  cRows.forEach(r=>{byDate[r.date]={e:r.exports,i:r.imports};});
+  const totalE=cRows.reduce((s,r)=>s+r.exports,0);
+  const totalI=cRows.reduce((s,r)=>s+r.imports,0);
+  const bal=totalE-totalI;
+  const last=dates[dates.length-1];
+
+  document.getElementById('cp-flag').innerHTML=flagImg(code,28)||'🌍';
+  document.getElementById('cp-name').textContent=CNAMES[code]||code;
+  document.getElementById('cp-subtitle').textContent='Canada bilateral trade · '+code+(from||to?' · '+(from||'start')+' → '+(to||'latest'):'');
+  document.getElementById('cp-chart-label').textContent=CNAMES[code]||code;
+
+  document.getElementById('cp-kpis').innerHTML=[
+    {l:'Total exports → '+(CNAMES[code]||code),v:fmt(totalE),c:'',vc:''},
+    {l:'Total imports ← '+(CNAMES[code]||code),v:fmt(totalI),c:'rt',vc:''},
+    {l:'Trade balance',v:fmt(bal),c:'gt',vc:bal>=0?'kpi-up':'kpi-down'},
+    {l:'Latest exports ('+(last||'—')+')',v:fmt(last?byDate[last].e:0),c:'',vc:''},
+    {l:'Latest imports ('+(last||'—')+')',v:fmt(last?byDate[last].i:0),c:'rt',vc:''},
+  ].map(k=>`<div class="kpi-card cp-kpi ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value ${k.vc}">${k.v}</div></div>`).join('');
+
+  dc('cp-chart-line');
+  charts['cp-chart-line']=new Chart(document.getElementById('cp-chart-line'),{type:'line',data:{labels:dates,datasets:[
+    {label:'Exports',data:dates.map(d=>toB(byDate[d]?.e||0)),borderColor:'#1a5c2e',backgroundColor:'rgba(26,92,46,.08)',tension:.3,pointRadius:dates.length>18?0:3,fill:true},
+    {label:'Imports',data:dates.map(d=>toB(byDate[d]?.i||0)),borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.08)',tension:.3,pointRadius:dates.length>18?0:3,fill:true},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{autoSkip:true,maxTicksLimit:12,font:{size:10}},grid:{display:false}},
+            y:{ticks:{callback:v=>'$'+v+'B',font:{size:10}}}}}});
+
+  dc('cp-chart-pie');
+  charts['cp-chart-pie']=new Chart(document.getElementById('cp-chart-pie'),{type:'doughnut',data:{
+    labels:['Exports','Imports'],datasets:[{data:[toB(totalE),toB(totalI)],backgroundColor:['#1a5c2e','#f5a623'],borderWidth:0}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10}}}}});
+
+  document.getElementById('cp-tbody').innerHTML=[...dates].reverse().map(d=>{
+    const e=byDate[d]?.e||0,i=byDate[d]?.i||0;
+    return`<tr><td><strong>${d}</strong></td><td>${fmt(e)}</td><td>${fmt(i)}</td><td style="color:${e>=i?'#16a34a':'#c0392b'}">${fmt(e-i)}</td></tr>`;
+  }).join('');
+
+  const panel=document.getElementById('country-panel');
+  panel.classList.add('visible');
+  /* scroll so the panel appears just below the map */
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function closePanel(){
+  document.getElementById('country-panel').classList.remove('visible');
+  ['cp-chart-line','cp-chart-pie'].forEach(id=>dc(id));
+}
+
+/* ══════════════════ PRODUCTS ══════════════════ */
+function rhs(){
+  const {from,to}=getRange();
+  const rows=filterHS2M(from,to);
+  const byHS={};
+  rows.forEach(r=>{
+    if(!byHS[r.hs2])byHS[r.hs2]={name:r.name,e:0,i:0};
+    byHS[r.hs2].e+=r.exports;
+    byHS[r.hs2].i+=r.imports;
+  });
+  const tot=Object.values(byHS).reduce((s,v)=>s+v.e+v.i,0);
+  const sorted=Object.entries(byHS).map(([k,v])=>({h:k,name:v.name,e:v.e,i:v.i,t:v.e+v.i})).sort((a,b)=>b.t-a.t);
+  const top20=sorted.slice(0,20);
+
+  /* KPIs */
+  const topExp=sorted.slice().sort((a,b)=>b.e-a.e)[0];
+  const topImp=sorted.slice().sort((a,b)=>b.i-a.i)[0];
+  document.getElementById('hs-kpi-grid').innerHTML=[
+    {l:'Top export category',v:topExp?topExp.name:'—',sub:topExp?fmt(topExp.e):'',c:''},
+    {l:'Top import category',v:topImp?topImp.name:'—',sub:topImp?fmt(topImp.i):'',c:'rt'},
+    {l:'Product categories',v:sorted.length,sub:'HS2 chapters',c:''},
+  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value" style="font-size:14px;line-height:1.3">${k.v}</div>${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
+
+  const hpx=Math.max(520,top20.length*28+80);
+  document.getElementById('c-hs').parentElement.style.height=hpx+'px';
+  dc('c-hs');
+  charts['c-hs']=new Chart(document.getElementById('c-hs'),{type:'bar',data:{
+    labels:top20.map(r=>{const n=r.name||'HS '+r.h;return n.length>30?n.substring(0,29)+'…':n;}),
+    datasets:[
+      {label:'Exports',data:top20.map(r=>toB(r.e)),backgroundColor:'#1a5c2e',stack:'s'},
+      {label:'Imports',data:top20.map(r=>toB(r.i)),backgroundColor:'#f5a623',stack:'s'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{callbacks:{title:its=>top20[its[0].dataIndex]?.name||''}}},
+    scales:{x:{stacked:true,ticks:{callback:v=>'$'+v+'B',font:{size:11}}},y:{stacked:true,ticks:{font:{size:11}}}}}});
+
+  document.getElementById('h-tbody').innerHTML=sorted.map(r=>`<tr>
+    <td style="color:var(--muted);font-size:12px"><strong>${r.h}</strong></td>
+    <td>${r.name||'—'}</td>
+    <td>${fmt(r.e)}</td><td>${fmt(r.i)}</td><td>${fmt(r.t)}</td>
+    <td>${(r.t/tot*100).toFixed(1)}%</td>
+  </tr>`).join('');
+}
+
+function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+function st(n){
+  const ns=['overview','monthly','countries','products'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ns[i]===n));
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id==='tab-'+n));
+}
+document.getElementById('tab-overview').classList.add('active');
+load();
+</script>
+</body>
+</html>
