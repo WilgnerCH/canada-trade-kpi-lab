@@ -1798,17 +1798,15 @@ let defaultFrom='', defaultTo='';
 let charts={};
 
 /* ── FLAGS & NAMES ── */
-/* Cross-platform flag images via flagcdn.com (works on Windows Chrome) */
+/* Cross-platform flags via flagcdn.com */
 function flagImg(code,size){
   size=size||20;
   if(!code)return '';
   var c=code.toLowerCase();
   var h=Math.round(size*0.75);
   return '<img src="https://flagcdn.com/w'+size+'/'+c+'.png"'
-       + ' srcset="https://flagcdn.com/w'+(size*2)+'/'+c+'.png 2x"'
        + ' width="'+size+'" height="'+h+'"'
-       + ' alt="'+code+'" class="flag-img"'
-       + ' onerror="this.style.display='none'">';
+       + ' alt="'+code+'" class="flag-img">';
 }
 const FLAGS={US:'🇺🇸',CN:'🇨🇳',GB:'🇬🇧',JP:'🇯🇵',DE:'🇩🇪',FR:'🇫🇷',MX:'🇲🇽',KR:'🇰🇷',IN:'🇮🇳',NL:'🇳🇱',BE:'🇧🇪',IT:'🇮🇹',AU:'🇦🇺',BR:'🇧🇷',CH:'🇨🇭',SE:'🇸🇪',NO:'🇳🇴',ES:'🇪🇸',TW:'🇹🇼',SG:'🇸🇬',HK:'🇭🇰',SA:'🇸🇦',ZA:'🇿🇦',VN:'🇻🇳',PE:'🇵🇪',ID:'🇮🇩',MY:'🇲🇾',PL:'🇵🇱',AR:'🇦🇷',CL:'🇨🇱',TR:'🇹🇷',IE:'🇮🇪',DK:'🇩🇰',AT:'🇦🇹',FI:'🇫🇮',PT:'🇵🇹',NZ:'🇳🇿',NG:'🇳🇬',AE:'🇦🇪',CO:'🇨🇴'};
 const CNAMES={US:'United States',CN:'China',GB:'United Kingdom',JP:'Japan',DE:'Germany',FR:'France',MX:'Mexico',KR:'South Korea',IN:'India',NL:'Netherlands',BE:'Belgium',IT:'Italy',AU:'Australia',BR:'Brazil',CH:'Switzerland',SE:'Sweden',NO:'Norway',ES:'Spain',TW:'Taiwan',SG:'Singapore',HK:'Hong Kong',SA:'Saudi Arabia',ZA:'South Africa',VN:'Vietnam',PE:'Peru',ID:'Indonesia',MY:'Malaysia',PL:'Poland',AR:'Argentina',CL:'Chile',TR:'Turkey',IE:'Ireland',DK:'Denmark',AT:'Austria',FI:'Finland',PT:'Portugal',NZ:'New Zealand',NG:'Nigeria',AE:'UAE',CO:'Colombia',CA:'Canada'};
