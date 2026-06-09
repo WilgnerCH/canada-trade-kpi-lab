@@ -85,7 +85,7 @@ tbody tr:hover{background:var(--gl);}
 #country-panel.visible{display:block;}
 .cp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
 .cp-title{display:flex;align-items:center;gap:10px;}
-.cp-flag{display:flex;align-items:center;} .flag-img{border-radius:2px;vertical-align:middle;margin-right:5px;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+.cp-flag{display:flex;align-items:center;min-height:32px;} .flag-img{border-radius:2px;vertical-align:middle;margin-right:5px;box-shadow:0 1px 2px rgba(0,0,0,.15);display:inline-block;}
 .cp-title h2{font-size:17px;font-weight:700;color:var(--gd);}
 .cp-title p{font-size:12px;color:var(--muted);margin-top:2px;}
 .cp-close{background:none;border:1px solid var(--bdr);border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;color:var(--muted);}
@@ -1798,18 +1798,17 @@ let defaultFrom='', defaultTo='';
 let charts={};
 
 /* ── FLAGS & NAMES ── */
+/* Cross-platform flag images via flagcdn.com (works on Windows Chrome) */
 function flagImg(code,size){
   size=size||20;
   if(!code)return '';
   var c=code.toLowerCase();
   var h=Math.round(size*0.75);
-  var el=document.createElement('img');
-  el.src='https://flagcdn.com/w'+size+'/'+c+'.png';
-  el.setAttribute('srcset','https://flagcdn.com/w'+(size*2)+'/'+c+'.png 2x');
-  el.width=size; el.height=h;
-  el.alt=code; el.className='flag-img';
-  el.onerror=function(){this.style.display='none';};
-  return el.outerHTML;
+  return '<img src="https://flagcdn.com/w'+size+'/'+c+'.png"'
+       + ' srcset="https://flagcdn.com/w'+(size*2)+'/'+c+'.png 2x"'
+       + ' width="'+size+'" height="'+h+'"'
+       + ' alt="'+code+'" class="flag-img"'
+       + ' onerror="this.style.display='none'">';
 }
 const FLAGS={US:'🇺🇸',CN:'🇨🇳',GB:'🇬🇧',JP:'🇯🇵',DE:'🇩🇪',FR:'🇫🇷',MX:'🇲🇽',KR:'🇰🇷',IN:'🇮🇳',NL:'🇳🇱',BE:'🇧🇪',IT:'🇮🇹',AU:'🇦🇺',BR:'🇧🇷',CH:'🇨🇭',SE:'🇸🇪',NO:'🇳🇴',ES:'🇪🇸',TW:'🇹🇼',SG:'🇸🇬',HK:'🇭🇰',SA:'🇸🇦',ZA:'🇿🇦',VN:'🇻🇳',PE:'🇵🇪',ID:'🇮🇩',MY:'🇲🇾',PL:'🇵🇱',AR:'🇦🇷',CL:'🇨🇱',TR:'🇹🇷',IE:'🇮🇪',DK:'🇩🇰',AT:'🇦🇹',FI:'🇫🇮',PT:'🇵🇹',NZ:'🇳🇿',NG:'🇳🇬',AE:'🇦🇪',CO:'🇨🇴'};
 const CNAMES={US:'United States',CN:'China',GB:'United Kingdom',JP:'Japan',DE:'Germany',FR:'France',MX:'Mexico',KR:'South Korea',IN:'India',NL:'Netherlands',BE:'Belgium',IT:'Italy',AU:'Australia',BR:'Brazil',CH:'Switzerland',SE:'Sweden',NO:'Norway',ES:'Spain',TW:'Taiwan',SG:'Singapore',HK:'Hong Kong',SA:'Saudi Arabia',ZA:'South Africa',VN:'Vietnam',PE:'Peru',ID:'Indonesia',MY:'Malaysia',PL:'Poland',AR:'Argentina',CL:'Chile',TR:'Turkey',IE:'Ireland',DK:'Denmark',AT:'Austria',FI:'Finland',PT:'Portugal',NZ:'New Zealand',NG:'Nigeria',AE:'UAE',CO:'Colombia',CA:'Canada'};
@@ -2111,7 +2110,7 @@ function openPanel(code, sortedOverride){
   const bal=totalE-totalI;
   const last=dates[dates.length-1];
 
-  document.getElementById('cp-flag').innerHTML=flagImg(code,28)||'🌍';
+  document.getElementById('cp-flag').innerHTML=flagImg(code,30)||'🌍';
   document.getElementById('cp-name').textContent=CNAMES[code]||code;
   document.getElementById('cp-subtitle').textContent='Canada bilateral trade · '+code+(from||to?' · '+(from||'start')+' → '+(to||'latest'):'');
   document.getElementById('cp-chart-label').textContent=CNAMES[code]||code;
