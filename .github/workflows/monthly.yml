@@ -1,75 +1,53 @@
-name: Monthly Analytics Update
+name: Monthly Trade Data Update
 
 permissions:
   contents: write
 
 on:
   schedule:
-    - cron: '0 6 10 * *'
+    - cron: '0 6 10 * *'   # 10th of every month at 06:00 UTC
   workflow_dispatch:
 
 jobs:
-  build-analytics:
+  update:
     runs-on: ubuntu-latest
 
     env:
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
 
     steps:
-      # =========================
-      # CHECKOUT
-      # =========================
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # =========================
-      # PYTHON SETUP
-      # =========================
-      - name: Setup Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # =========================
-      # INSTALL DEPENDENCIES
-      # =========================
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # =========================
-      # RUN SCRIPT (JSON)
-      # =========================
-      - name: Run aggregation pipeline
-        run: python src/build_aggregations.py
+      # Step 1: Download directly from Statistics Canada → data/canada_trade.parquet
+      - name: Extract from Statistics Canada
+        run: python src/extract_statcan.py
 
-      # =========================
-      # NEW: CONVERT JSON → CSV
-      # =========================
-      - name: Convert JSON to CSV
-        run: python src/build_csv.py
+      # Step 2: Upload cleaned parquet to Hugging Face
+      - name: Upload to Hugging Face
+        run: python src/upload_hf.py
 
-      # =========================
-      # DEBUG
-      # =========================
+      # Step 3: Build dashboard JSON files from local parquet
+      - name: Build dashboard data
+        run: python src/build_dashboard_data.py
+
+      # Step 4: Show what was generated
       - name: List generated files
+        run: ls -lh data/*.json
+
+      # Step 5: Commit and push updated JSON files
+      - name: Commit and push
         run: |
-          echo "Files in data folder:"
-          ls -la data || echo "No data folder"
-
-          echo "Files in data_csv folder:"
-          ls -la data_csv || echo "No CSV folder"
-
-      # =========================
-      # COMMIT & PUSH
-      # =========================
-      - name: Commit and push JSON + CSV files
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
           git add data/*.json
-          git add data_csv/*.csv
-
-          git diff --cached --quiet || git commit -m "auto-update trade data (JSON + CSV)"
-
+          git diff --cached --quiet || git commit -m "auto-update trade data $(date +%Y-%m)"
           git push
