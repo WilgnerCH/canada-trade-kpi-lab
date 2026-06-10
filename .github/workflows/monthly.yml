@@ -12,9 +12,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
 
-    env:
-      HF_TOKEN: ${{ secrets.HF_TOKEN }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,23 +24,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Step 1: Download directly from Statistics Canada → data/canada_trade.parquet
-      - name: Extract from Statistics Canada
-        run: python src/extract_statcan.py
-
-      # Step 2: Upload cleaned parquet to Hugging Face
-      - name: Upload to Hugging Face
-        run: python src/upload_hf.py
-
-      # Step 3: Build dashboard JSON files from local parquet
+      # Build dashboard JSON files from HuggingFace parquet (no StatCan download needed)
       - name: Build dashboard data
-        run: python src/build_dashboard_data.py
+        run: python src/build_dashboard_data.py --hf
 
-      # Step 4: Show what was generated
       - name: List generated files
         run: ls -lh data/*.json
 
-      # Step 5: Commit and push updated JSON files
       - name: Commit and push
         run: |
           git config user.name "github-actions"
