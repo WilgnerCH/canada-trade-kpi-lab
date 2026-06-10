@@ -1,3 +1,4 @@
-pandas
-pyarrow
-huggingface_hub
+pandas>=2.0
+pyarrow>=14.0
+requests>=2.28
+huggingface_hub>=0.20
