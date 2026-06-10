@@ -2400,12 +2400,12 @@ date,hs,name,imports,exports,total
 2025-12,9904.00.90,HS 990400,0.0,259846984.0,259846984.0
 2025-12,9999.99.99 00,HS 999999,1470753163.0,0.0,1470753163.0
 2026-01,1001.19.90,Wheat and meslin - Durum wheat - Other,0.0,256348980.0,256348980.0
-2026-01,1001.99.31,Wheat and meslin - Other - Other,0.0,252026450.0,252026450.0
+2026-01,1001.99.31,Wheat and meslin - Other - Other,0.0,251854163.0,251854163.0
 2026-01,1001.99.32,Wheat and meslin - Other - Other,0.0,245325298.0,245325298.0
-2026-01,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,512964105.0,512964105.0
+2026-01,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,512971823.0,512971823.0
 2026-01,1514.11.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings and 1514.19, the expression “low erucic acid rape or colza",0.0,186841770.0,186841770.0
-2026-01,1514.19.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings 1514.11 and , the expression “low erucic acid rape or colza",0.0,276762444.0,276762444.0
-2026-01,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,371077741.0,371077741.0
+2026-01,1514.19.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings 1514.11 and , the expression “low erucic acid rape or colza",0.0,276645078.0,276645078.0
+2026-01,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,371044648.0,371044648.0
 2026-01,2004.10.00,Other vegetables prepared or preserved otherwise than by - Potatoes,0.0,219133003.0,219133003.0
 2026-01,2306.41.00,"Oil-cake and other solid residues, whether or not ground or in - Of rape or colza seeds - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,144979373.0,144979373.0
 2026-01,2601.11.10,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Non-agglomerated",0.0,364296065.0,364296065.0
@@ -2413,13 +2413,13 @@ date,hs,name,imports,exports,total
 2026-01,2603.00.10,Copper ores and concentrates - 26.03 Copper ores and concentrates.,0.0,362674779.0,362674779.0
 2026-01,2701.12.10,"Coal; briquettes, ovoids and similar solid fuels manufactured - Coal, whether or not pulverised, but not agglomerated - 2.- For the purposes of subheading , “bituminous coal” means coal having a volatile matter limit (on",0.0,589557808.0,589557808.0
 2026-01,2709.00.00 49,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",1039578715.0,0.0,1039578715.0
-2026-01,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,7856321458.0,7856321458.0
+2026-01,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,7856712581.0,7856712581.0
 2026-01,2709.00.29,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,2769972668.0,2769972668.0
 2026-01,2710.12.90,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",0.0,259575973.0,259575973.0
 2026-01,2710.12.90 39,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",231549486.0,0.0,231549486.0
 2026-01,2710.12.90 92,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",91112310.0,0.0,91112310.0
 2026-01,2710.12.90 99,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",352182051.0,0.0,352182051.0
-2026-01,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,520663694.0,520663694.0
+2026-01,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,536105261.0,536105261.0
 2026-01,2710.19.31,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,449484953.0,449484953.0
 2026-01,2710.19.99 11,"Petroleum oils and oils obtained from bituminous minerals, - Other",161049375.0,0.0,161049375.0
 2026-01,2711.12.00,Petroleum gases and other gaseous hydrocarbons - Liquefied - Propane,0.0,371694606.0,371694606.0
@@ -2429,113 +2429,113 @@ date,hs,name,imports,exports,total
 2026-01,2818.20.00 10,"Artificial corundum, whether or not chemically defined; - Aluminium oxide, other than artificial corundum",229900405.0,0.0,229900405.0
 2026-01,2844.10.20,"Radioactive chemical elements and radioactive isotopes - Natural uranium and its compounds; alloys, dispersions (including",0.0,197689005.0,197689005.0
 2026-01,3002.15.00 00,"Human blood; animal blood prepared for therapeutic, - Immunological products, put up in measured doses or in forms",517579275.0,0.0,517579275.0
-2026-01,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",362069532.0,0.0,362069532.0
+2026-01,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",298266899.0,0.0,298266899.0
 2026-01,3004.90.90,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",0.0,449054940.0,449054940.0
 2026-01,3104.20.00,"Mineral or chemical fertilisers, potassic - Potassium chloride",0.0,723967684.0,723967684.0
 2026-01,3901.40.00,"Polymers of ethylene, in primary forms - (2) The copolymers named in subheadings 3901.30, , 3903.20, 3903.30 and 3904.30 are",0.0,192328348.0,192328348.0
-2026-01,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,157346246.0,0.0,157346246.0
+2026-01,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,158723824.0,0.0,158723824.0
 2026-01,4011.10.00 00,"New pneumatic tyres, of rubber - Of a kind used on motor cars (including station wagons and racing",160521925.0,0.0,160521925.0
-2026-01,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,304030402.0,304030402.0
-2026-01,4410.12.00,"Particle board, oriented strand board (OSB) and similar board - Of wood - Oriented strand board (OSB)",0.0,135858103.0,135858103.0
+2026-01,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,304056040.0,304056040.0
+2026-01,4410.12.00,"Particle board, oriented strand board (OSB) and similar board - Of wood - Oriented strand board (OSB)",0.0,135860836.0,135860836.0
 2026-01,4703.21.20,"Chemical wood pulp, soda or sulphate, other than dissolving - Semi-bleached or bleached - Coniferous",0.0,341806314.0,341806314.0
 2026-01,7106.91.00,"Silver (including silver plated with gold or platinum), unwrought - Other - Unwrought",0.0,369023496.0,369023496.0
 2026-01,7108.12.00 19,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,49955027.0,0.0,49955027.0
 2026-01,7108.12.00 21,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,201472154.0,0.0,201472154.0
 2026-01,7108.12.00 22,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,1677390316.0,0.0,1677390316.0
-2026-01,7108.12.10,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,4950845519.0,4950845519.0
+2026-01,7108.12.10,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,4977574839.0,4977574839.0
 2026-01,7108.12.20,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,80574151.0,80574151.0
 2026-01,7112.91.00 90,"Waste and scrap of precious metal or of metal clad with - Other - Of gold, including metal clad with gold but excluding",296381098.0,0.0,296381098.0
 2026-01,7402.00.00 00,Unrefined copper; copper anodes for electrolytic refining - 74.02 Unrefined copper; copper anodes for electrolytic refining.,298338818.0,0.0,298338818.0
 2026-01,7403.11.00,"Refined copper and copper alloys, unwrought - Refined copper - Cathodes and sections of cathodes",0.0,315291484.0,315291484.0
 2026-01,7502.10.00,"Unwrought nickel - Nickel, not alloyed",0.0,249735155.0,249735155.0
 2026-01,7601.10.00,"Unwrought aluminium - Aluminium, not alloyed",0.0,498999332.0,498999332.0
-2026-01,7601.20.00,Unwrought aluminium - Aluminium alloys,0.0,265328886.0,265328886.0
+2026-01,7601.20.00,Unwrought aluminium - Aluminium alloys,0.0,265326549.0,265326549.0
 2026-01,7602.00.00,Aluminium waste and scrap - 76.02 Aluminium waste and scrap.,0.0,287757652.0,287757652.0
-2026-01,7606.12.00 11,"Aluminium plates, sheets and strip, of a thickness exceeding - Rectangular (including square) - Of aluminium alloys",131341350.0,0.0,131341350.0
+2026-01,7606.12.00 11,"Aluminium plates, sheets and strip, of a thickness exceeding - Rectangular (including square) - Of aluminium alloys",131351032.0,0.0,131351032.0
 2026-01,8407.34.00,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",0.0,236028429.0,236028429.0
-2026-01,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",380236114.0,0.0,380236114.0
-2026-01,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,188679860.0,0.0,188679860.0
+2026-01,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",381882921.0,0.0,381882921.0
+2026-01,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,188686215.0,0.0,188686215.0
 2026-01,8411.12.00,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",0.0,394108991.0,394108991.0
 2026-01,8411.12.00 10,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",205710066.0,0.0,205710066.0
-2026-01,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,343032170.0,343032170.0
-2026-01,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",519664211.0,0.0,519664211.0
-2026-01,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",466582396.0,0.0,466582396.0
-2026-01,8471.50.00 90,Automatic data processing machines and units thereof; - Other automatic data processing machines - Processing units other than those of subheading 8471.41 or,777540945.0,0.0,777540945.0
-2026-01,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",378412258.0,0.0,378412258.0
-2026-01,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",496815737.0,0.0,496815737.0
-2026-01,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,227156104.0,227156104.0
-2026-01,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",147066757.0,0.0,147066757.0
+2026-01,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,346120943.0,346120943.0
+2026-01,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",518949370.0,0.0,518949370.0
+2026-01,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",466620014.0,0.0,466620014.0
+2026-01,8471.50.00 90,Automatic data processing machines and units thereof; - Other automatic data processing machines - Processing units other than those of subheading 8471.41 or,777541529.0,0.0,777541529.0
+2026-01,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",378142567.0,0.0,378142567.0
+2026-01,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",496841183.0,0.0,496841183.0
+2026-01,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,226830377.0,226830377.0
+2026-01,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",147054346.0,0.0,147054346.0
 2026-01,8701.21.00 11,Tractors (other than tractors of heading 87.09) - Road tractors for semi-trailers - With only compression-ignition internal combustion piston,107712188.0,0.0,107712188.0
 2026-01,8703.22.00 98,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",286037459.0,0.0,286037459.0
 2026-01,8703.22.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",0.0,286034348.0,286034348.0
-2026-01,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",323906231.0,0.0,323906231.0
-2026-01,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1288978283.0,0.0,1288978283.0
+2026-01,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",323901963.0,0.0,323901963.0
+2026-01,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1289369046.0,0.0,1289369046.0
 2026-01,8703.23.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",0.0,540175795.0,540175795.0
-2026-01,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",320205860.0,0.0,320205860.0
+2026-01,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",320205823.0,0.0,320205823.0
 2026-01,8703.24.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",0.0,212692131.0,212692131.0
 2026-01,8703.40.90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",0.0,331336828.0,331336828.0
 2026-01,8703.40.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",355510644.0,0.0,355510644.0
 2026-01,8703.60.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",93504061.0,0.0,93504061.0
-2026-01,8703.80.00 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with only electric motor for propulsion",205825123.0,0.0,205825123.0
+2026-01,8703.80.00 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with only electric motor for propulsion",205831729.0,0.0,205831729.0
 2026-01,8704.21.90 30,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,167754978.0,0.0,167754978.0
 2026-01,8704.22.00 10,Motor vehicles for the transport of goods - g.v.w. exceeding 5 tonnes but not exceeding 20 tonnes,175950747.0,0.0,175950747.0
 2026-01,8704.23.00 00,Motor vehicles for the transport of goods - g.v.w. exceeding 20 tonnes,127383519.0,0.0,127383519.0
-2026-01,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,742827328.0,0.0,742827328.0
+2026-01,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,742827869.0,0.0,742827869.0
 2026-01,8704.31.20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,0.0,173280234.0,173280234.0
-2026-01,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,499412049.0,499412049.0
-2026-01,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,333227729.0,0.0,333227729.0
-2026-01,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,96777519.0,0.0,96777519.0
-2026-01,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,223875966.0,223875966.0
-2026-01,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,379747721.0,0.0,379747721.0
+2026-01,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,499435418.0,499435418.0
+2026-01,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,333486692.0,0.0,333486692.0
+2026-01,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,96934392.0,0.0,96934392.0
+2026-01,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,223458430.0,223458430.0
+2026-01,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,379772300.0,0.0,379772300.0
 2026-01,8802.30.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - Aeroplanes and other aircraft, of an unladen weight exceeding",0.0,73535586.0,73535586.0
 2026-01,8802.40.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - 1.- For the purposes of subheadings 8802.11 to , the expression “unladen weight” means the",0.0,241746971.0,241746971.0
-2026-01,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,228987940.0,228987940.0
-2026-01,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",561371637.0,0.0,561371637.0
-2026-01,9802.00.00,HS 980200,0.0,508506324.0,508506324.0
-2026-01,9901.00.00,HS 990100,0.0,423526285.0,423526285.0
-2026-01,9904.00.21,HS 990400,0.0,200440680.0,200440680.0
-2026-01,9904.00.29,HS 990400,0.0,166818623.0,166818623.0
+2026-01,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,228859198.0,228859198.0
+2026-01,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",561375014.0,0.0,561375014.0
+2026-01,9802.00.00,HS 980200,0.0,501103478.0,501103478.0
+2026-01,9901.00.00,HS 990100,0.0,420070801.0,420070801.0
+2026-01,9904.00.21,HS 990400,0.0,202086210.0,202086210.0
+2026-01,9904.00.29,HS 990400,0.0,166225660.0,166225660.0
 2026-01,9904.00.52,HS 990400,0.0,228073114.0,228073114.0
-2026-01,9904.00.56,HS 990400,0.0,408822004.0,408822004.0
-2026-01,9904.00.90,HS 990400,0.0,593151763.0,593151763.0
-2026-01,9999.99.99 00,HS 999999,918095243.0,0.0,918095243.0
+2026-01,9904.00.56,HS 990400,0.0,408690828.0,408690828.0
+2026-01,9904.00.90,HS 990400,0.0,592330142.0,592330142.0
+2026-01,9999.99.99 00,HS 999999,918664877.0,0.0,918664877.0
 2026-02,1001.19.90,Wheat and meslin - Durum wheat - Other,0.0,209275412.0,209275412.0
-2026-02,1001.99.31,Wheat and meslin - Other - Other,0.0,251368373.0,251368373.0
+2026-02,1001.99.31,Wheat and meslin - Other - Other,0.0,251385703.0,251385703.0
 2026-02,1001.99.32,Wheat and meslin - Other - Other,0.0,221430445.0,221430445.0
-2026-02,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,528681317.0,528681317.0
+2026-02,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,528736782.0,528736782.0
 2026-02,1514.11.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings and 1514.19, the expression “low erucic acid rape or colza",0.0,232939990.0,232939990.0
-2026-02,1514.19.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings 1514.11 and , the expression “low erucic acid rape or colza",0.0,251595018.0,251595018.0
-2026-02,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,384389391.0,384389391.0
-2026-02,2004.10.00,Other vegetables prepared or preserved otherwise than by - Potatoes,0.0,195365318.0,195365318.0
+2026-02,1514.19.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings 1514.11 and , the expression “low erucic acid rape or colza",0.0,251479502.0,251479502.0
+2026-02,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,384338776.0,384338776.0
+2026-02,2004.10.00,Other vegetables prepared or preserved otherwise than by - Potatoes,0.0,195421956.0,195421956.0
 2026-02,2306.41.00,"Oil-cake and other solid residues, whether or not ground or in - Of rape or colza seeds - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,134433859.0,134433859.0
-2026-02,2601.11.10,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Non-agglomerated",0.0,434320978.0,434320978.0
+2026-02,2601.11.10,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Non-agglomerated",0.0,431034419.0,431034419.0
 2026-02,2601.12.00,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Agglomerated",0.0,157114062.0,157114062.0
 2026-02,2603.00.10,Copper ores and concentrates - 26.03 Copper ores and concentrates.,0.0,421702661.0,421702661.0
-2026-02,2701.12.10,"Coal; briquettes, ovoids and similar solid fuels manufactured - Coal, whether or not pulverised, but not agglomerated - 2.- For the purposes of subheading , “bituminous coal” means coal having a volatile matter limit (on",0.0,636592421.0,636592421.0
+2026-02,2701.12.10,"Coal; briquettes, ovoids and similar solid fuels manufactured - Coal, whether or not pulverised, but not agglomerated - 2.- For the purposes of subheading , “bituminous coal” means coal having a volatile matter limit (on",0.0,637028172.0,637028172.0
 2026-02,2709.00.00 49,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",1518114761.0,0.0,1518114761.0
-2026-02,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,7788585804.0,7788585804.0
-2026-02,2709.00.29,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,2181811119.0,2181811119.0
+2026-02,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,7782170953.0,7782170953.0
+2026-02,2709.00.29,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,2171026116.0,2171026116.0
 2026-02,2710.12.90,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",0.0,233268754.0,233268754.0
 2026-02,2710.12.90 39,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",357035048.0,0.0,357035048.0
 2026-02,2710.12.90 92,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",63845686.0,0.0,63845686.0
 2026-02,2710.12.90 99,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",409729014.0,0.0,409729014.0
-2026-02,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,572629065.0,572629065.0
+2026-02,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,572453830.0,572453830.0
 2026-02,2710.19.31,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,402409161.0,402409161.0
-2026-02,2710.19.99 11,"Petroleum oils and oils obtained from bituminous minerals, - Other",277290902.0,0.0,277290902.0
-2026-02,2711.12.00,Petroleum gases and other gaseous hydrocarbons - Liquefied - Propane,0.0,436006690.0,436006690.0
-2026-02,2711.21.00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,0.0,2481896129.0,2481896129.0
+2026-02,2710.19.99 11,"Petroleum oils and oils obtained from bituminous minerals, - Other",278443294.0,0.0,278443294.0
+2026-02,2711.12.00,Petroleum gases and other gaseous hydrocarbons - Liquefied - Propane,0.0,435016649.0,435016649.0
+2026-02,2711.21.00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,0.0,1611997083.0,1611997083.0
 2026-02,2711.21.00 00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,783212504.0,0.0,783212504.0
 2026-02,2716.00.00,Electrical energy. (optional heading) - 27.16 Electrical energy. (optional heading),0.0,363173085.0,363173085.0
 2026-02,2818.20.00 10,"Artificial corundum, whether or not chemically defined; - Aluminium oxide, other than artificial corundum",214868592.0,0.0,214868592.0
 2026-02,2844.10.20,"Radioactive chemical elements and radioactive isotopes - Natural uranium and its compounds; alloys, dispersions (including",0.0,209221756.0,209221756.0
 2026-02,3002.15.00 00,"Human blood; animal blood prepared for therapeutic, - Immunological products, put up in measured doses or in forms",761855429.0,0.0,761855429.0
-2026-02,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",457541487.0,0.0,457541487.0
+2026-02,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",324699474.0,0.0,324699474.0
 2026-02,3004.90.90,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",0.0,751175542.0,751175542.0
 2026-02,3104.20.00,"Mineral or chemical fertilisers, potassic - Potassium chloride",0.0,714334632.0,714334632.0
-2026-02,3901.40.00,"Polymers of ethylene, in primary forms - (2) The copolymers named in subheadings 3901.30, , 3903.20, 3903.30 and 3904.30 are",0.0,145144161.0,145144161.0
-2026-02,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,163438980.0,0.0,163438980.0
+2026-02,3901.40.00,"Polymers of ethylene, in primary forms - (2) The copolymers named in subheadings 3901.30, , 3903.20, 3903.30 and 3904.30 are",0.0,169993711.0,169993711.0
+2026-02,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,164563817.0,0.0,164563817.0
 2026-02,4011.10.00 00,"New pneumatic tyres, of rubber - Of a kind used on motor cars (including station wagons and racing",174580181.0,0.0,174580181.0
-2026-02,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,333027678.0,333027678.0
+2026-02,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,333040044.0,333040044.0
 2026-02,4410.12.00,"Particle board, oriented strand board (OSB) and similar board - Of wood - Oriented strand board (OSB)",0.0,154557289.0,154557289.0
 2026-02,4703.21.20,"Chemical wood pulp, soda or sulphate, other than dissolving - Semi-bleached or bleached - Coniferous",0.0,319138455.0,319138455.0
 2026-02,7106.91.00,"Silver (including silver plated with gold or platinum), unwrought - Other - Unwrought",0.0,321105561.0,321105561.0
@@ -2544,99 +2544,99 @@ date,hs,name,imports,exports,total
 2026-02,7108.12.00 22,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,1568154680.0,0.0,1568154680.0
 2026-02,7108.12.10,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,5557315784.0,5557315784.0
 2026-02,7108.12.20,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,38167484.0,38167484.0
-2026-02,7112.91.00 90,"Waste and scrap of precious metal or of metal clad with - Other - Of gold, including metal clad with gold but excluding",732606491.0,0.0,732606491.0
+2026-02,7112.91.00 90,"Waste and scrap of precious metal or of metal clad with - Other - Of gold, including metal clad with gold but excluding",734627691.0,0.0,734627691.0
 2026-02,7402.00.00 00,Unrefined copper; copper anodes for electrolytic refining - 74.02 Unrefined copper; copper anodes for electrolytic refining.,355493526.0,0.0,355493526.0
 2026-02,7403.11.00,"Refined copper and copper alloys, unwrought - Refined copper - Cathodes and sections of cathodes",0.0,280441334.0,280441334.0
 2026-02,7502.10.00,"Unwrought nickel - Nickel, not alloyed",0.0,195707420.0,195707420.0
 2026-02,7601.10.00,"Unwrought aluminium - Aluminium, not alloyed",0.0,584045599.0,584045599.0
 2026-02,7601.20.00,Unwrought aluminium - Aluminium alloys,0.0,308101236.0,308101236.0
-2026-02,7602.00.00,Aluminium waste and scrap - 76.02 Aluminium waste and scrap.,0.0,288948354.0,288948354.0
+2026-02,7602.00.00,Aluminium waste and scrap - 76.02 Aluminium waste and scrap.,0.0,288947102.0,288947102.0
 2026-02,7606.12.00 11,"Aluminium plates, sheets and strip, of a thickness exceeding - Rectangular (including square) - Of aluminium alloys",128327791.0,0.0,128327791.0
 2026-02,8407.34.00,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",0.0,317666686.0,317666686.0
-2026-02,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",392599545.0,0.0,392599545.0
-2026-02,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,193703511.0,0.0,193703511.0
-2026-02,8411.12.00,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",0.0,195824185.0,195824185.0
+2026-02,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",394885661.0,0.0,394885661.0
+2026-02,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,193951235.0,0.0,193951235.0
+2026-02,8411.12.00,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",0.0,205949801.0,205949801.0
 2026-02,8411.12.00 10,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",148316030.0,0.0,148316030.0
-2026-02,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,354086340.0,354086340.0
-2026-02,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",569971690.0,0.0,569971690.0
-2026-02,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",392539862.0,0.0,392539862.0
+2026-02,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,393080729.0,393080729.0
+2026-02,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",569815887.0,0.0,569815887.0
+2026-02,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",392541750.0,0.0,392541750.0
 2026-02,8471.50.00 90,Automatic data processing machines and units thereof; - Other automatic data processing machines - Processing units other than those of subheading 8471.41 or,639531777.0,0.0,639531777.0
-2026-02,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",553343766.0,0.0,553343766.0
-2026-02,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",570802818.0,0.0,570802818.0
-2026-02,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,234271698.0,234271698.0
-2026-02,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",170228113.0,0.0,170228113.0
+2026-02,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",553343902.0,0.0,553343902.0
+2026-02,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",570838527.0,0.0,570838527.0
+2026-02,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,234173662.0,234173662.0
+2026-02,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",170215042.0,0.0,170215042.0
 2026-02,8701.21.00 11,Tractors (other than tractors of heading 87.09) - Road tractors for semi-trailers - With only compression-ignition internal combustion piston,142422921.0,0.0,142422921.0
-2026-02,8703.22.00 98,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",341213199.0,0.0,341213199.0
+2026-02,8703.22.00 98,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",341214095.0,0.0,341214095.0
 2026-02,8703.22.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",0.0,396628805.0,396628805.0
-2026-02,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",473136293.0,0.0,473136293.0
-2026-02,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1501801386.0,0.0,1501801386.0
-2026-02,8703.23.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",0.0,684080995.0,684080995.0
-2026-02,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",474256997.0,0.0,474256997.0
-2026-02,8703.24.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",0.0,430634757.0,430634757.0
+2026-02,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",473136295.0,0.0,473136295.0
+2026-02,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1501850448.0,0.0,1501850448.0
+2026-02,8703.23.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",0.0,688130681.0,688130681.0
+2026-02,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",474469626.0,0.0,474469626.0
+2026-02,8703.24.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",0.0,443685508.0,443685508.0
 2026-02,8703.40.90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",0.0,684929511.0,684929511.0
 2026-02,8703.40.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",427584719.0,0.0,427584719.0
 2026-02,8703.60.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",210387763.0,0.0,210387763.0
 2026-02,8703.80.00 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with only electric motor for propulsion",397893887.0,0.0,397893887.0
-2026-02,8704.21.90 30,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,233608798.0,0.0,233608798.0
+2026-02,8704.21.90 30,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,233622987.0,0.0,233622987.0
 2026-02,8704.22.00 10,Motor vehicles for the transport of goods - g.v.w. exceeding 5 tonnes but not exceeding 20 tonnes,376597093.0,0.0,376597093.0
-2026-02,8704.23.00 00,Motor vehicles for the transport of goods - g.v.w. exceeding 20 tonnes,117710753.0,0.0,117710753.0
-2026-02,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,1153645195.0,0.0,1153645195.0
+2026-02,8704.23.00 00,Motor vehicles for the transport of goods - g.v.w. exceeding 20 tonnes,118147788.0,0.0,118147788.0
+2026-02,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,1153822221.0,0.0,1153822221.0
 2026-02,8704.31.20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,0.0,321726565.0,321726565.0
-2026-02,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,579535678.0,579535678.0
-2026-02,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,361356558.0,0.0,361356558.0
-2026-02,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,132401095.0,0.0,132401095.0
-2026-02,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,281400608.0,281400608.0
-2026-02,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,480055225.0,0.0,480055225.0
+2026-02,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,580126675.0,580126675.0
+2026-02,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,354593016.0,0.0,354593016.0
+2026-02,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,132521077.0,0.0,132521077.0
+2026-02,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,281157953.0,281157953.0
+2026-02,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,480213729.0,0.0,480213729.0
 2026-02,8802.30.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - Aeroplanes and other aircraft, of an unladen weight exceeding",0.0,157218888.0,157218888.0
 2026-02,8802.40.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - 1.- For the purposes of subheadings 8802.11 to , the expression “unladen weight” means the",0.0,422705811.0,422705811.0
-2026-02,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,234732287.0,234732287.0
-2026-02,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",586581814.0,0.0,586581814.0
-2026-02,9802.00.00,HS 980200,0.0,514611700.0,514611700.0
-2026-02,9901.00.00,HS 990100,0.0,417162150.0,417162150.0
-2026-02,9904.00.21,HS 990400,0.0,137035363.0,137035363.0
-2026-02,9904.00.29,HS 990400,0.0,182092179.0,182092179.0
+2026-02,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,234962042.0,234962042.0
+2026-02,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",586595166.0,0.0,586595166.0
+2026-02,9802.00.00,HS 980200,0.0,512523750.0,512523750.0
+2026-02,9901.00.00,HS 990100,0.0,410819908.0,410819908.0
+2026-02,9904.00.21,HS 990400,0.0,137050224.0,137050224.0
+2026-02,9904.00.29,HS 990400,0.0,181990094.0,181990094.0
 2026-02,9904.00.52,HS 990400,0.0,232100343.0,232100343.0
-2026-02,9904.00.56,HS 990400,0.0,395656279.0,395656279.0
-2026-02,9904.00.90,HS 990400,0.0,300695363.0,300695363.0
-2026-02,9999.99.99 00,HS 999999,848238174.0,0.0,848238174.0
-2026-03,1001.19.90,Wheat and meslin - Durum wheat - Other,0.0,210456822.0,210456822.0
+2026-02,9904.00.56,HS 990400,0.0,395632777.0,395632777.0
+2026-02,9904.00.90,HS 990400,0.0,300075529.0,300075529.0
+2026-02,9999.99.99 00,HS 999999,851699345.0,0.0,851699345.0
+2026-03,1001.19.90,Wheat and meslin - Durum wheat - Other,0.0,205872456.0,205872456.0
 2026-03,1001.99.31,Wheat and meslin - Other - Other,0.0,177413771.0,177413771.0
-2026-03,1001.99.32,Wheat and meslin - Other - Other,0.0,340844426.0,340844426.0
-2026-03,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,692959873.0,692959873.0
-2026-03,1514.11.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings and 1514.19, the expression “low erucic acid rape or colza",0.0,179736567.0,179736567.0
+2026-03,1001.99.32,Wheat and meslin - Other - Other,0.0,310207590.0,310207590.0
+2026-03,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,693002547.0,693002547.0
+2026-03,1514.11.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings and 1514.19, the expression “low erucic acid rape or colza",0.0,179855527.0,179855527.0
 2026-03,1514.19.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings 1514.11 and , the expression “low erucic acid rape or colza",0.0,301173493.0,301173493.0
-2026-03,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,467876453.0,467876453.0
-2026-03,2004.10.00,Other vegetables prepared or preserved otherwise than by - Potatoes,0.0,233191572.0,233191572.0
-2026-03,2306.41.00,"Oil-cake and other solid residues, whether or not ground or in - Of rape or colza seeds - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,175779832.0,175779832.0
-2026-03,2601.11.10,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Non-agglomerated",0.0,455774439.0,455774439.0
+2026-03,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,468050046.0,468050046.0
+2026-03,2004.10.00,Other vegetables prepared or preserved otherwise than by - Potatoes,0.0,233134934.0,233134934.0
+2026-03,2306.41.00,"Oil-cake and other solid residues, whether or not ground or in - Of rape or colza seeds - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,175071747.0,175071747.0
+2026-03,2601.11.10,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Non-agglomerated",0.0,457192965.0,457192965.0
 2026-03,2601.12.00,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Agglomerated",0.0,133339537.0,133339537.0
-2026-03,2603.00.10,Copper ores and concentrates - 26.03 Copper ores and concentrates.,0.0,773414807.0,773414807.0
-2026-03,2701.12.10,"Coal; briquettes, ovoids and similar solid fuels manufactured - Coal, whether or not pulverised, but not agglomerated - 2.- For the purposes of subheading , “bituminous coal” means coal having a volatile matter limit (on",0.0,526659722.0,526659722.0
-2026-03,2709.00.00 49,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",1613209173.0,0.0,1613209173.0
-2026-03,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,9853647510.0,9853647510.0
+2026-03,2603.00.10,Copper ores and concentrates - 26.03 Copper ores and concentrates.,0.0,772603723.0,772603723.0
+2026-03,2701.12.10,"Coal; briquettes, ovoids and similar solid fuels manufactured - Coal, whether or not pulverised, but not agglomerated - 2.- For the purposes of subheading , “bituminous coal” means coal having a volatile matter limit (on",0.0,519232552.0,519232552.0
+2026-03,2709.00.00 49,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",1668902389.0,0.0,1668902389.0
+2026-03,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,9800380908.0,9800380908.0
 2026-03,2709.00.29,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,2739857906.0,2739857906.0
 2026-03,2710.12.90,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",0.0,405876358.0,405876358.0
-2026-03,2710.12.90 39,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",289145173.0,0.0,289145173.0
+2026-03,2710.12.90 39,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",289140887.0,0.0,289140887.0
 2026-03,2710.12.90 92,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",153506547.0,0.0,153506547.0
-2026-03,2710.12.90 99,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",404563132.0,0.0,404563132.0
-2026-03,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,796093470.0,796093470.0
-2026-03,2710.19.31,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,544004224.0,544004224.0
-2026-03,2710.19.99 11,"Petroleum oils and oils obtained from bituminous minerals, - Other",223449239.0,0.0,223449239.0
-2026-03,2711.12.00,Petroleum gases and other gaseous hydrocarbons - Liquefied - Propane,0.0,350337726.0,350337726.0
+2026-03,2710.12.90 99,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",406881608.0,0.0,406881608.0
+2026-03,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,797292495.0,797292495.0
+2026-03,2710.19.31,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,609565231.0,609565231.0
+2026-03,2710.19.99 11,"Petroleum oils and oils obtained from bituminous minerals, - Other",233486227.0,0.0,233486227.0
+2026-03,2711.12.00,Petroleum gases and other gaseous hydrocarbons - Liquefied - Propane,0.0,349827581.0,349827581.0
 2026-03,2711.21.00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,0.0,1666120047.0,1666120047.0
-2026-03,2711.21.00 00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,620681635.0,0.0,620681635.0
-2026-03,2716.00.00,Electrical energy. (optional heading) - 27.16 Electrical energy. (optional heading),0.0,263300582.0,263300582.0
-2026-03,2818.20.00 10,"Artificial corundum, whether or not chemically defined; - Aluminium oxide, other than artificial corundum",147587650.0,0.0,147587650.0
+2026-03,2711.21.00 00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,630932604.0,0.0,630932604.0
+2026-03,2716.00.00,Electrical energy. (optional heading) - 27.16 Electrical energy. (optional heading),0.0,193224259.0,193224259.0
+2026-03,2818.20.00 10,"Artificial corundum, whether or not chemically defined; - Aluminium oxide, other than artificial corundum",147587749.0,0.0,147587749.0
 2026-03,2844.10.20,"Radioactive chemical elements and radioactive isotopes - Natural uranium and its compounds; alloys, dispersions (including",0.0,227039127.0,227039127.0
-2026-03,3002.15.00 00,"Human blood; animal blood prepared for therapeutic, - Immunological products, put up in measured doses or in forms",488476394.0,0.0,488476394.0
-2026-03,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",531580555.0,0.0,531580555.0
-2026-03,3004.90.90,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",0.0,825999844.0,825999844.0
+2026-03,3002.15.00 00,"Human blood; animal blood prepared for therapeutic, - Immunological products, put up in measured doses or in forms",488476544.0,0.0,488476544.0
+2026-03,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",329452900.0,0.0,329452900.0
+2026-03,3004.90.90,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",0.0,825643134.0,825643134.0
 2026-03,3104.20.00,"Mineral or chemical fertilisers, potassic - Potassium chloride",0.0,856328905.0,856328905.0
-2026-03,3901.40.00,"Polymers of ethylene, in primary forms - (2) The copolymers named in subheadings 3901.30, , 3903.20, 3903.30 and 3904.30 are",0.0,203395971.0,203395971.0
-2026-03,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,193719913.0,0.0,193719913.0
-2026-03,4011.10.00 00,"New pneumatic tyres, of rubber - Of a kind used on motor cars (including station wagons and racing",191514756.0,0.0,191514756.0
-2026-03,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,396942517.0,396942517.0
-2026-03,4410.12.00,"Particle board, oriented strand board (OSB) and similar board - Of wood - Oriented strand board (OSB)",0.0,183452546.0,183452546.0
+2026-03,3901.40.00,"Polymers of ethylene, in primary forms - (2) The copolymers named in subheadings 3901.30, , 3903.20, 3903.30 and 3904.30 are",0.0,178546421.0,178546421.0
+2026-03,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,196137737.0,0.0,196137737.0
+2026-03,4011.10.00 00,"New pneumatic tyres, of rubber - Of a kind used on motor cars (including station wagons and racing",198571839.0,0.0,198571839.0
+2026-03,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,402304775.0,402304775.0
+2026-03,4410.12.00,"Particle board, oriented strand board (OSB) and similar board - Of wood - Oriented strand board (OSB)",0.0,183877122.0,183877122.0
 2026-03,4703.21.20,"Chemical wood pulp, soda or sulphate, other than dissolving - Semi-bleached or bleached - Coniferous",0.0,307076323.0,307076323.0
 2026-03,7106.91.00,"Silver (including silver plated with gold or platinum), unwrought - Other - Unwrought",0.0,499943433.0,499943433.0
 2026-03,7108.12.00 19,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,34351560.0,0.0,34351560.0
@@ -2644,58 +2644,158 @@ date,hs,name,imports,exports,total
 2026-03,7108.12.00 22,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,1991823749.0,0.0,1991823749.0
 2026-03,7108.12.10,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,7461999892.0,7461999892.0
 2026-03,7108.12.20,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,55820388.0,55820388.0
-2026-03,7112.91.00 90,"Waste and scrap of precious metal or of metal clad with - Other - Of gold, including metal clad with gold but excluding",1143866034.0,0.0,1143866034.0
+2026-03,7112.91.00 90,"Waste and scrap of precious metal or of metal clad with - Other - Of gold, including metal clad with gold but excluding",1147439809.0,0.0,1147439809.0
 2026-03,7402.00.00 00,Unrefined copper; copper anodes for electrolytic refining - 74.02 Unrefined copper; copper anodes for electrolytic refining.,95826826.0,0.0,95826826.0
 2026-03,7403.11.00,"Refined copper and copper alloys, unwrought - Refined copper - Cathodes and sections of cathodes",0.0,264437020.0,264437020.0
 2026-03,7502.10.00,"Unwrought nickel - Nickel, not alloyed",0.0,212265695.0,212265695.0
 2026-03,7601.10.00,"Unwrought aluminium - Aluminium, not alloyed",0.0,650153436.0,650153436.0
 2026-03,7601.20.00,Unwrought aluminium - Aluminium alloys,0.0,362470581.0,362470581.0
 2026-03,7602.00.00,Aluminium waste and scrap - 76.02 Aluminium waste and scrap.,0.0,357470520.0,357470520.0
-2026-03,7606.12.00 11,"Aluminium plates, sheets and strip, of a thickness exceeding - Rectangular (including square) - Of aluminium alloys",173816333.0,0.0,173816333.0
-2026-03,8407.34.00,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",0.0,357748925.0,357748925.0
-2026-03,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",469458132.0,0.0,469458132.0
-2026-03,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,207052893.0,0.0,207052893.0
+2026-03,7606.12.00 11,"Aluminium plates, sheets and strip, of a thickness exceeding - Rectangular (including square) - Of aluminium alloys",179442970.0,0.0,179442970.0
+2026-03,8407.34.00,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",0.0,357753925.0,357753925.0
+2026-03,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",472733930.0,0.0,472733930.0
+2026-03,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,208964259.0,0.0,208964259.0
 2026-03,8411.12.00,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",0.0,140599192.0,140599192.0
-2026-03,8411.12.00 10,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",117127657.0,0.0,117127657.0
-2026-03,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,409825918.0,409825918.0
-2026-03,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",618096810.0,0.0,618096810.0
-2026-03,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",637228392.0,0.0,637228392.0
-2026-03,8471.50.00 90,Automatic data processing machines and units thereof; - Other automatic data processing machines - Processing units other than those of subheading 8471.41 or,797499660.0,0.0,797499660.0
-2026-03,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",637211283.0,0.0,637211283.0
-2026-03,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",759966703.0,0.0,759966703.0
-2026-03,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,299463789.0,299463789.0
-2026-03,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",195134198.0,0.0,195134198.0
-2026-03,8701.21.00 11,Tractors (other than tractors of heading 87.09) - Road tractors for semi-trailers - With only compression-ignition internal combustion piston,162478016.0,0.0,162478016.0
-2026-03,8703.22.00 98,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",431822938.0,0.0,431822938.0
+2026-03,8411.12.00 10,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",208239838.0,0.0,208239838.0
+2026-03,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,417710933.0,417710933.0
+2026-03,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",622833158.0,0.0,622833158.0
+2026-03,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",637611480.0,0.0,637611480.0
+2026-03,8471.50.00 90,Automatic data processing machines and units thereof; - Other automatic data processing machines - Processing units other than those of subheading 8471.41 or,844691419.0,0.0,844691419.0
+2026-03,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",637253010.0,0.0,637253010.0
+2026-03,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",763863267.0,0.0,763863267.0
+2026-03,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,299390652.0,299390652.0
+2026-03,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",205085378.0,0.0,205085378.0
+2026-03,8701.21.00 11,Tractors (other than tractors of heading 87.09) - Road tractors for semi-trailers - With only compression-ignition internal combustion piston,162484474.0,0.0,162484474.0
+2026-03,8703.22.00 98,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",431824060.0,0.0,431824060.0
 2026-03,8703.22.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",0.0,382710805.0,382710805.0
-2026-03,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",614863114.0,0.0,614863114.0
-2026-03,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1701565263.0,0.0,1701565263.0
-2026-03,8703.23.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",0.0,984947467.0,984947467.0
-2026-03,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",530202873.0,0.0,530202873.0
-2026-03,8703.24.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",0.0,553760770.0,553760770.0
+2026-03,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",709729463.0,0.0,709729463.0
+2026-03,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1903599002.0,0.0,1903599002.0
+2026-03,8703.23.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",0.0,980897781.0,980897781.0
+2026-03,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",558723335.0,0.0,558723335.0
+2026-03,8703.24.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",0.0,540584724.0,540584724.0
 2026-03,8703.40.90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",0.0,1125068076.0,1125068076.0
-2026-03,8703.40.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",552854245.0,0.0,552854245.0
-2026-03,8703.60.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",135118000.0,0.0,135118000.0
-2026-03,8703.80.00 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with only electric motor for propulsion",342523357.0,0.0,342523357.0
-2026-03,8704.21.90 30,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,302228008.0,0.0,302228008.0
-2026-03,8704.22.00 10,Motor vehicles for the transport of goods - g.v.w. exceeding 5 tonnes but not exceeding 20 tonnes,311687084.0,0.0,311687084.0
-2026-03,8704.23.00 00,Motor vehicles for the transport of goods - g.v.w. exceeding 20 tonnes,144306478.0,0.0,144306478.0
-2026-03,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,1625104751.0,0.0,1625104751.0
-2026-03,8704.31.20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,0.0,336905192.0,336905192.0
-2026-03,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,644541807.0,644541807.0
-2026-03,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,416364377.0,0.0,416364377.0
-2026-03,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,151722006.0,0.0,151722006.0
-2026-03,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,308403695.0,308403695.0
-2026-03,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,757469410.0,0.0,757469410.0
-2026-03,8802.30.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - Aeroplanes and other aircraft, of an unladen weight exceeding",0.0,264754135.0,264754135.0
+2026-03,8703.40.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",582196946.0,0.0,582196946.0
+2026-03,8703.60.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",226736065.0,0.0,226736065.0
+2026-03,8703.80.00 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with only electric motor for propulsion",401568193.0,0.0,401568193.0
+2026-03,8704.21.90 30,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,305982987.0,0.0,305982987.0
+2026-03,8704.22.00 10,Motor vehicles for the transport of goods - g.v.w. exceeding 5 tonnes but not exceeding 20 tonnes,315355966.0,0.0,315355966.0
+2026-03,8704.23.00 00,Motor vehicles for the transport of goods - g.v.w. exceeding 20 tonnes,144306579.0,0.0,144306579.0
+2026-03,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,1655423749.0,0.0,1655423749.0
+2026-03,8704.31.20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,0.0,336952336.0,336952336.0
+2026-03,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,643725895.0,643725895.0
+2026-03,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,424338073.0,0.0,424338073.0
+2026-03,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,157642318.0,0.0,157642318.0
+2026-03,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,308481223.0,308481223.0
+2026-03,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,759496311.0,0.0,759496311.0
+2026-03,8802.30.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - Aeroplanes and other aircraft, of an unladen weight exceeding",0.0,272367070.0,272367070.0
 2026-03,8802.40.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - 1.- For the purposes of subheadings 8802.11 to , the expression “unladen weight” means the",0.0,798059537.0,798059537.0
-2026-03,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,263791186.0,263791186.0
-2026-03,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",420751898.0,0.0,420751898.0
-2026-03,9802.00.00,HS 980200,0.0,372151465.0,372151465.0
-2026-03,9901.00.00,HS 990100,0.0,469991025.0,469991025.0
-2026-03,9904.00.21,HS 990400,0.0,205360353.0,205360353.0
-2026-03,9904.00.29,HS 990400,0.0,207961009.0,207961009.0
-2026-03,9904.00.52,HS 990400,0.0,293866131.0,293866131.0
+2026-03,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,261708006.0,261708006.0
+2026-03,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",689298228.0,0.0,689298228.0
+2026-03,9802.00.00,HS 980200,0.0,369295127.0,369295127.0
+2026-03,9901.00.00,HS 990100,0.0,470313840.0,470313840.0
+2026-03,9904.00.21,HS 990400,0.0,198796433.0,198796433.0
+2026-03,9904.00.29,HS 990400,0.0,207861048.0,207861048.0
+2026-03,9904.00.52,HS 990400,0.0,293936088.0,293936088.0
 2026-03,9904.00.56,HS 990400,0.0,493554191.0,493554191.0
-2026-03,9904.00.90,HS 990400,0.0,283272060.0,283272060.0
-2026-03,9999.99.99 00,HS 999999,432165792.0,0.0,432165792.0
+2026-03,9904.00.90,HS 990400,0.0,282938684.0,282938684.0
+2026-03,9999.99.99 00,HS 999999,1056210234.0,0.0,1056210234.0
+2026-04,1001.19.90,Wheat and meslin - Durum wheat - Other,0.0,262852277.0,262852277.0
+2026-04,1001.99.31,Wheat and meslin - Other - Other,0.0,337298536.0,337298536.0
+2026-04,1001.99.32,Wheat and meslin - Other - Other,0.0,450636933.0,450636933.0
+2026-04,1205.10.20,"Rape or colza seeds, whether or not broken - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,588558330.0,588558330.0
+2026-04,1514.11.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings and 1514.19, the expression “low erucic acid rape or colza",0.0,281495585.0,281495585.0
+2026-04,1514.19.00,"Rape, colza or mustard oil and fractions thereof, whether or not - Low erucic acid rape or colza oil and its fractions - 2.- For the purposes of subheadings 1514.11 and , the expression “low erucic acid rape or colza",0.0,306661832.0,306661832.0
+2026-04,1905.90.10,"Bread, pastry, cakes, biscuits and other bakers' wares, whether - Sweet biscuits; waffles and wafers - Other",0.0,424025667.0,424025667.0
+2026-04,2004.10.00,Other vegetables prepared or preserved otherwise than by - Potatoes,0.0,213369252.0,213369252.0
+2026-04,2306.41.00,"Oil-cake and other solid residues, whether or not ground or in - Of rape or colza seeds - 1.- For the purposes of subheading , the expression “low erucic acid rape or colza seeds” means",0.0,172417017.0,172417017.0
+2026-04,2601.11.10,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Non-agglomerated",0.0,350631635.0,350631635.0
+2026-04,2601.12.00,"Iron ores and concentrates, including roasted iron pyrites - Iron ores and concentrates, other than roasted iron pyrites - Agglomerated",0.0,113302196.0,113302196.0
+2026-04,2603.00.10,Copper ores and concentrates - 26.03 Copper ores and concentrates.,0.0,295213424.0,295213424.0
+2026-04,2701.12.10,"Coal; briquettes, ovoids and similar solid fuels manufactured - Coal, whether or not pulverised, but not agglomerated - 2.- For the purposes of subheading , “bituminous coal” means coal having a volatile matter limit (on",0.0,451150461.0,451150461.0
+2026-04,2709.00.00 49,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",2041742473.0,0.0,2041742473.0
+2026-04,2709.00.10,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,11548830513.0,11548830513.0
+2026-04,2709.00.29,"Petroleum oils and oils obtained from bituminous minerals, - 27.09 Petroleum oils and oils obtained from bituminous minerals,",0.0,3501658656.0,3501658656.0
+2026-04,2710.12.90,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",0.0,78246794.0,78246794.0
+2026-04,2710.12.90 39,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",396281803.0,0.0,396281803.0
+2026-04,2710.12.90 92,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",180414171.0,0.0,180414171.0
+2026-04,2710.12.90 99,"Petroleum oils and oils obtained from bituminous minerals, - 4.- For the purposes of subheading , “light oils and preparations” are those of which 90 % or",681232357.0,0.0,681232357.0
+2026-04,2710.19.20,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,863721242.0,863721242.0
+2026-04,2710.19.31,"Petroleum oils and oils obtained from bituminous minerals, - Other",0.0,684928658.0,684928658.0
+2026-04,2710.19.99 11,"Petroleum oils and oils obtained from bituminous minerals, - Other",262988092.0,0.0,262988092.0
+2026-04,2711.12.00,Petroleum gases and other gaseous hydrocarbons - Liquefied - Propane,0.0,349304819.0,349304819.0
+2026-04,2711.21.00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,0.0,1027424844.0,1027424844.0
+2026-04,2711.21.00 00,Petroleum gases and other gaseous hydrocarbons - In gaseous state - Natural gas,386539393.0,0.0,386539393.0
+2026-04,2716.00.00,Electrical energy. (optional heading) - 27.16 Electrical energy. (optional heading),0.0,216467661.0,216467661.0
+2026-04,2818.20.00 10,"Artificial corundum, whether or not chemically defined; - Aluminium oxide, other than artificial corundum",195582361.0,0.0,195582361.0
+2026-04,2844.10.20,"Radioactive chemical elements and radioactive isotopes - Natural uranium and its compounds; alloys, dispersions (including",0.0,156038650.0,156038650.0
+2026-04,3002.15.00 00,"Human blood; animal blood prepared for therapeutic, - Immunological products, put up in measured doses or in forms",555169038.0,0.0,555169038.0
+2026-04,3004.90.00 79,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",225784060.0,0.0,225784060.0
+2026-04,3004.90.90,"Medicaments (excluding goods of heading 30.02, 30.05 or 30.06) - Other, containing alkaloids or derivatives thereof - Other",0.0,866747317.0,866747317.0
+2026-04,3104.20.00,"Mineral or chemical fertilisers, potassic - Potassium chloride",0.0,879928394.0,879928394.0
+2026-04,3901.40.00,"Polymers of ethylene, in primary forms - (2) The copolymers named in subheadings 3901.30, , 3903.20, 3903.30 and 3904.30 are",0.0,203713147.0,203713147.0
+2026-04,3926.90.99 90,Other articles of plastics and articles of other materials of - Other,188265166.0,0.0,188265166.0
+2026-04,4011.10.00 00,"New pneumatic tyres, of rubber - Of a kind used on motor cars (including station wagons and racing",187546127.0,0.0,187546127.0
+2026-04,4407.13.90,"Wood sawn or chipped lengthwise, sliced or peeled, whether or - Coniferous - 3.- For the purposes of subheading , “S-P-F” refers to wood sourced from mixed stands of spruce,",0.0,464725083.0,464725083.0
+2026-04,4410.12.00,"Particle board, oriented strand board (OSB) and similar board - Of wood - Oriented strand board (OSB)",0.0,184472638.0,184472638.0
+2026-04,4703.21.20,"Chemical wood pulp, soda or sulphate, other than dissolving - Semi-bleached or bleached - Coniferous",0.0,288818418.0,288818418.0
+2026-04,7106.91.00,"Silver (including silver plated with gold or platinum), unwrought - Other - Unwrought",0.0,345895268.0,345895268.0
+2026-04,7108.12.00 19,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,6256936.0,0.0,6256936.0
+2026-04,7108.12.00 21,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,142222507.0,0.0,142222507.0
+2026-04,7108.12.00 22,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,1709224261.0,0.0,1709224261.0
+2026-04,7108.12.10,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,5679875666.0,5679875666.0
+2026-04,7108.12.20,Gold (including gold plated with platinum) unwrought or in - Non-monetary - Other unwrought forms,0.0,46072635.0,46072635.0
+2026-04,7112.91.00 90,"Waste and scrap of precious metal or of metal clad with - Other - Of gold, including metal clad with gold but excluding",730439207.0,0.0,730439207.0
+2026-04,7402.00.00 00,Unrefined copper; copper anodes for electrolytic refining - 74.02 Unrefined copper; copper anodes for electrolytic refining.,561566683.0,0.0,561566683.0
+2026-04,7403.11.00,"Refined copper and copper alloys, unwrought - Refined copper - Cathodes and sections of cathodes",0.0,306316046.0,306316046.0
+2026-04,7502.10.00,"Unwrought nickel - Nickel, not alloyed",0.0,210666985.0,210666985.0
+2026-04,7601.10.00,"Unwrought aluminium - Aluminium, not alloyed",0.0,555340254.0,555340254.0
+2026-04,7601.20.00,Unwrought aluminium - Aluminium alloys,0.0,345891758.0,345891758.0
+2026-04,7602.00.00,Aluminium waste and scrap - 76.02 Aluminium waste and scrap.,0.0,416892113.0,416892113.0
+2026-04,7606.12.00 11,"Aluminium plates, sheets and strip, of a thickness exceeding - Rectangular (including square) - Of aluminium alloys",203214307.0,0.0,203214307.0
+2026-04,8407.34.00,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",0.0,310360352.0,310360352.0
+2026-04,8407.34.29 10,"Spark-ignition reciprocating or rotary internal combustion - Marine propulsion engines - Of a cylinder capacity exceeding 1,000 cc",435889802.0,0.0,435889802.0
+2026-04,8409.91.00 10,Parts suitable for use solely or principally with the engines of - Other - Suitable for use solely or principally with spark-ignition internal,189999255.0,0.0,189999255.0
+2026-04,8411.12.00,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",0.0,459324572.0,459324572.0
+2026-04,8411.12.00 10,"Turbo-jets, turbo-propellers and other gas turbines - Turbo-jets - Of a thrust exceeding 25 kN",238950151.0,0.0,238950151.0
+2026-04,8411.91.00,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",0.0,376437145.0,376437145.0
+2026-04,8411.91.00 20,"Turbo-jets, turbo-propellers and other gas turbines - Parts - Of turbo-jets or turbo-propellers",594113026.0,0.0,594113026.0
+2026-04,8471.30.00 00,"Automatic data processing machines and units thereof; - Portable automatic data processing machines, weighing not more",622632085.0,0.0,622632085.0
+2026-04,8471.50.00 90,Automatic data processing machines and units thereof; - Other automatic data processing machines - Processing units other than those of subheading 8471.41 or,784396071.0,0.0,784396071.0
+2026-04,8517.13.00 00,"Telephone sets, including smartphones and other telephones for - Smartphones",599617105.0,0.0,599617105.0
+2026-04,8517.62.00 90,"Telephone sets, including smartphones and other telephones for - Machines for the reception, conversion and transmission or",526349927.0,0.0,526349927.0
+2026-04,8537.10.00,"Boards, panels, consoles, desks, cabinets and other bases, - For a voltage not exceeding 1,000 V",0.0,291787880.0,291787880.0
+2026-04,8544.30.00 00,"Insulated (including enamelled or anodised) wire, cable - Winding wire - Ignition wiring sets and other wiring sets of a kind used in",184585880.0,0.0,184585880.0
+2026-04,8701.21.00 11,Tractors (other than tractors of heading 87.09) - Road tractors for semi-trailers - With only compression-ignition internal combustion piston,153520602.0,0.0,153520602.0
+2026-04,8703.22.00 98,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",340598990.0,0.0,340598990.0
+2026-04,8703.22.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,000 cc but not exceeding",0.0,326389792.0,326389792.0
+2026-04,8703.23.00 22,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",519620329.0,0.0,519620329.0
+2026-04,8703.23.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",1448205650.0,0.0,1448205650.0
+2026-04,8703.23.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 1,500 cc but not exceeding",0.0,796596072.0,796596072.0
+2026-04,8703.24.00 92,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",372308308.0,0.0,372308308.0
+2026-04,8703.24.97,"Motor cars and other motor vehicles principally designed for - Of a cylinder capacity exceeding 3,000 cc",0.0,398856656.0,398856656.0
+2026-04,8703.40.90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",0.0,1422096815.0,1422096815.0
+2026-04,8703.40.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",377546167.0,0.0,377546167.0
+2026-04,8703.60.90 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with both spark-ignition internal combustion",209080951.0,0.0,209080951.0
+2026-04,8703.80.00 90,"Motor cars and other motor vehicles principally designed for - Other vehicles, with only electric motor for propulsion",268910313.0,0.0,268910313.0
+2026-04,8704.21.90 30,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,304871994.0,0.0,304871994.0
+2026-04,8704.22.00 10,Motor vehicles for the transport of goods - g.v.w. exceeding 5 tonnes but not exceeding 20 tonnes,337371213.0,0.0,337371213.0
+2026-04,8704.23.00 00,Motor vehicles for the transport of goods - g.v.w. exceeding 20 tonnes,161351529.0,0.0,161351529.0
+2026-04,8704.31.00 20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,1257607738.0,0.0,1257607738.0
+2026-04,8704.31.20,Motor vehicles for the transport of goods - g.v.w. not exceeding 5 tonnes,0.0,338918747.0,338918747.0
+2026-04,8708.29.00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,0.0,614180744.0,614180744.0
+2026-04,8708.29.99 90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Other,366102399.0,0.0,366102399.0
+2026-04,8708.40.29 00,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories of bodies (including cabs) - Gear boxes and parts thereof,127968732.0,0.0,127968732.0
+2026-04,8708.99.90,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,0.0,289615124.0,289615124.0
+2026-04,8708.99.99 19,Parts and accessories of the motor vehicles of headings 87.01 to - Other parts and accessories - Other,840407020.0,0.0,840407020.0
+2026-04,8802.30.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - Aeroplanes and other aircraft, of an unladen weight exceeding",0.0,140037406.0,140037406.0
+2026-04,8802.40.00,"Other aircraft (for example, helicopters, aeroplanes), except - Helicopters - 1.- For the purposes of subheadings 8802.11 to , the expression “unladen weight” means the",0.0,529271158.0,529271158.0
+2026-04,8807.30.00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",0.0,266240515.0,266240515.0
+2026-04,8807.30.00 00,"Parts of goods of heading 88.01, 88.02 or 88.06 - Other parts of aeroplanes, helicopters or unmanned aircraft",328106801.0,0.0,328106801.0
+2026-04,9802.00.00,HS 980200,0.0,462456480.0,462456480.0
+2026-04,9901.00.00,HS 990100,0.0,437452143.0,437452143.0
+2026-04,9904.00.21,HS 990400,0.0,168311493.0,168311493.0
+2026-04,9904.00.29,HS 990400,0.0,196612284.0,196612284.0
+2026-04,9904.00.52,HS 990400,0.0,397095947.0,397095947.0
+2026-04,9904.00.56,HS 990400,0.0,616503432.0,616503432.0
+2026-04,9904.00.90,HS 990400,0.0,279443442.0,279443442.0
+2026-04,9999.99.99 00,HS 999999,584633418.0,0.0,584633418.0
