@@ -1638,6 +1638,7 @@ z"/>
   <div class="tab" onclick="st('monthly')">Monthly trends</div>
   <div class="tab" onclick="st('countries')">By country</div>
   <div class="tab" onclick="st('products')">Products (HS)</div>
+  <div class="tab" onclick="st('brazil')">🇧🇷 Brazil Focus</div>
 </div>
 
 <main>
@@ -1779,6 +1780,73 @@ z"/>
       <tbody id="h-tbody"></tbody></table>
     </div>
   </div>
+
+  <!-- BRAZIL FOCUS -->
+  <div class="section" id="tab-brazil">
+    <div class="finfo" id="fi-brazil"></div>
+
+    <div class="kpi-grid" id="br-kpi-grid"></div>
+
+    <div class="chart-grid">
+      <div class="chart-card full-width">
+        <h3>Monthly Trade Flow — Canada ↔ Brazil</h3>
+        <div class="csub">Exports to Brazil &amp; Imports from Brazil · CAD$ billions</div>
+        <div class="legend">
+          <div class="legend-item"><div class="ldot" style="background:#1a5c2e"></div>Exports CA→BR</div>
+          <div class="legend-item"><div class="ldot" style="background:#f5a623"></div>Imports CA←BR</div>
+        </div>
+        <div style="position:relative;height:260px"><canvas id="c-br-tl"></canvas></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Trade Balance — Canada vs Brazil</h3>
+        <div class="csub">Positive = Canada surplus · Negative = Canada deficit</div>
+        <div style="position:relative;height:230px"><canvas id="c-br-bal"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Brazil vs Latin American Peers</h3>
+        <div class="csub">Total bilateral trade with Canada · selected period</div>
+        <div style="position:relative;height:230px"><canvas id="c-br-peers"></canvas></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card full-width">
+        <h3>🎯 Opportunity Matrix — Brazil Export Potential to Canada</h3>
+        <div class="csub">Bubble size = opportunity score &nbsp;·&nbsp; X axis = Canada import volume &nbsp;·&nbsp; Y axis = Brazil competitiveness &nbsp;·&nbsp; Hover for details</div>
+        <div style="position:relative;height:440px"><canvas id="c-br-opp"></canvas></div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:8px">
+          <span>🟢 High opportunity</span>
+          <span>🟡 Medium opportunity</span>
+          <span>🔴 Lower priority</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card full-width">
+        <h3>🍁 Canada Export Strengths → Brazil Market</h3>
+        <div class="csub">Categories where Canada is globally competitive and Brazil represents a growth market</div>
+        <div style="position:relative;height:300px"><canvas id="c-ca-opp"></canvas></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:8px">
+      <div style="font-size:14px;font-weight:600;color:var(--gd);margin-bottom:14px">💡 Strategic Insights &amp; Investment Opportunities</div>
+      <div id="br-insights" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:24px"></div>
+    </div>
+
+    <div class="table-card">
+      <h3>Monthly Trade Detail — Canada ↔ Brazil</h3>
+      <table>
+        <thead><tr><th>Period</th><th>Exports CA→BR</th><th>Imports CA←BR</th><th>Balance</th><th>Total</th></tr></thead>
+        <tbody id="br-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
 
 <footer>
@@ -1904,6 +1972,215 @@ function fmt(n){
 function toB(n){return n?+(n/1e9).toFixed(3):0;}
 function pct(n){return(n>=0?'+':'')+n.toFixed(1)+'%';}
 
+/* ══════════════════════════════════════════════
+   BRAZIL FOCUS — static reference data
+   ══════════════════════════════════════════════ */
+
+/* Brazil's export competitiveness by HS2 chapter (score 0-100) */
+const BR_STRENGTH = {
+  "02":{score:88,note:"World's top beef & poultry exporter (JBS, Marfrig, BRF)"},
+  "08":{score:90,note:"Leading tropical fruit exporter — oranges, mangoes, papayas"},
+  "09":{score:95,note:"#1 global coffee producer — 35% of world supply"},
+  "10":{score:76,note:"Major corn, rice & soy exporter"},
+  "12":{score:95,note:"World's largest soybean exporter — ~50% global market share"},
+  "15":{score:72,note:"Soybean oil, palm oil, biodiesel"},
+  "17":{score:85,note:"World's top sugar & ethanol producer"},
+  "22":{score:65,note:"Tropical fruit juices, cachaça, craft beer growth"},
+  "26":{score:78,note:"World's #1 iron ore producer (Vale); manganese, bauxite, niobium"},
+  "27":{score:62,note:"Pre-salt oil, ethanol (sugarcane-based biofuel)"},
+  "40":{score:70,note:"Natural rubber — 2nd largest in Americas"},
+  "41":{score:75,note:"Cattle hides & semi-processed leather"},
+  "44":{score:68,note:"Eucalyptus timber, tropical hardwoods"},
+  "47":{score:83,note:"World's #2 pulp producer — Suzano, Fibria"},
+  "48":{score:70,note:"Kraft paper, newsprint, specialty boards"},
+  "72":{score:68,note:"Steel — CSN, Gerdau, Usiminas"},
+  "76":{score:75,note:"Aluminium smelting — CBA, Novelis Brazil"},
+  "88":{score:72,note:"Embraer — world's 3rd largest commercial aircraft maker"},
+};
+
+/* Canada's export competitiveness by HS2 chapter (score 0-100) */
+const CA_STRENGTH = {
+  "10":{score:92,note:"World's top wheat & canola exporter"},
+  "12":{score:88,note:"Canola, flaxseed, lentils, peas — pulses for protein"},
+  "26":{score:85,note:"Potash (#1 producer), nickel, copper, gold"},
+  "27":{score:80,note:"Oil sands crude, LNG, natural gas"},
+  "44":{score:78,note:"Softwood lumber — BC & Quebec mills"},
+  "47":{score:82,note:"Bleached kraft pulp from softwood"},
+  "48":{score:75,note:"Newsprint, coated papers"},
+  "84":{score:65,note:"Mining & agricultural equipment (Finning, CNH)"},
+  "85":{score:62,note:"Telecom & AI hardware (BlackBerry, Mitel)"},
+  "88":{score:68,note:"Bombardier aircraft & rail systems"},
+  "30":{score:70,note:"Pharmaceuticals & biotech (Apotex, Bausch)"},
+  "90":{score:65,note:"Medical devices & diagnostics"},
+  "03":{score:80,note:"Atlantic salmon, lobster, shrimp, crab"},
+};
+
+/* Strategic insight cards */
+const INSIGHTS_STATIC = [
+  {icon:'🌱',title:'Agri-Food Gap — High Priority',color:'#1a5c2e',
+   text:'Canada imports significant volumes of coffee, tropical fruit and sugar from Asia and Central America. Brazil is the world leader in all three and is under-represented in the Canadian market. Trade facilitation and direct import channels could capture $200M+ in annual incremental flows.'},
+  {icon:'✈️',title:'Aerospace Synergy',color:'#1a5c2e',
+   text:'Both countries operate world-class aerospace industries — Embraer (commercial & executive jets) and Bombardier (business jets & rail). Bilateral supply-chain partnerships, MRO (maintenance, repair & overhaul) facilities and component trade represent multi-year investment opportunities.'},
+  {icon:'⛏️',title:'Critical Minerals — Strategic Fit',color:'#c0392b',
+   text:'Brazil holds the world\'s largest niobium reserves (>90% of global supply), plus major iron ore, aluminium and manganese. Canada is investing heavily in battery supply chains and critical minerals — direct FDI and off-take agreements could secure long-term supply.'},
+  {icon:'🌾',title:'Complementary Agriculture',color:'#1a5c2e',
+   text:'Canada exports wheat, canola and pulses that Brazil needs for its protein-crop industry. Brazil exports soy, corn and sugar that feed Canada\'s food processors. A bilateral agricultural MOU could double agri-food trade within 5 years.'},
+  {icon:'🔋',title:'Clean Energy & Biofuels',color:'#1a5c2e',
+   text:'Brazil generates 85% of electricity from renewables and leads globally in sugarcane ethanol. Canada is building a clean fuel standard and SAF (sustainable aviation fuel) industry — Brazilian ethanol technology and blending credits represent a timely partnership.'},
+  {icon:'📈',title:'Market Underpenetration',color:'#c0392b',
+   text:'Brazil is the 9th largest economy globally but typically ranks outside Canada\'s top 15 trade partners. Bilateral trade volume remains well below potential given GDP size, complementary economic structures and CPTPP-adjacent positioning — the gap is an opportunity.'},
+];
+
+/* ══════════════════ BRAZIL FOCUS ══════════════════ */
+function rb(){
+  const {from,to}=getRange();
+
+  /* All Brazil rows in selected period */
+  const brRows=D.countries_monthly.filter(r=>r.country==='BR'&&(!from||r.date>=from)&&(!to||r.date<=to));
+  const dates=[...new Set(brRows.map(r=>r.date))].sort();
+  const byDate={};brRows.forEach(r=>{byDate[r.date]={e:r.exports,i:r.imports};});
+
+  /* Period totals */
+  const totalE=brRows.reduce((s,r)=>s+r.exports,0);
+  const totalI=brRows.reduce((s,r)=>s+r.imports,0);
+  const bal=totalE-totalI;
+
+  /* YoY for latest month */
+  const latestDate=dates[dates.length-1]||'';
+  const allBR=D.countries_monthly.filter(r=>r.country==='BR');
+  const prevDate=latestDate?(parseInt(latestDate.slice(0,4))-1)+latestDate.slice(4):'';
+  const latestRow=allBR.find(r=>r.date===latestDate)||{};
+  const prevRow=allBR.find(r=>r.date===prevDate)||{};
+  const yoyE=prevRow.exports?((latestRow.exports||0)-prevRow.exports)/prevRow.exports*100:null;
+
+  /* Brazil rank & share */
+  const allCMf=D.countries_monthly.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to));
+  const byC={};
+  allCMf.forEach(r=>{if(!byC[r.country])byC[r.country]=0;byC[r.country]+=(r.exports+r.imports);});
+  const sortedC=Object.entries(byC).sort((a,b)=>b[1]-a[1]);
+  const rank=sortedC.findIndex(([c])=>c==='BR')+1;
+  const totalWorld=Object.values(byC).reduce((s,v)=>s+v,0);
+  const sharePC=totalWorld>0?(totalE+totalI)/totalWorld*100:0;
+
+  /* ── KPIs ── */
+  document.getElementById('br-kpi-grid').innerHTML=[
+    {l:'Exports CA→Brazil',v:fmt(totalE),c:''},
+    {l:'Imports CA←Brazil',v:fmt(totalI),c:'rt'},
+    {l:'Trade Balance',v:fmt(bal),c:'gt',vc:bal>=0?'kpi-up':'kpi-down'},
+    {l:'Share of Canada Trade',v:sharePC.toFixed(2)+'%',c:'',sub:'of all CA partners'},
+    {l:'Partner Rank',v:rank?'#'+rank:'—',c:'',sub:'among CA partners'},
+    {l:'Latest Month',v:latestDate||'—',c:'',sub:yoyE!=null?pct(yoyE)+' exports YoY':''},
+  ].map(k=>`<div class="kpi-card ${k.c||''}"><div class="kpi-label">${k.l}</div><div class="kpi-value ${k.vc||''}">${k.v}</div>${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
+
+  /* ── Timeline ── */
+  dc('c-br-tl');
+  charts['c-br-tl']=new Chart(document.getElementById('c-br-tl'),{type:'line',data:{labels:dates,datasets:[
+    {label:'Exports CA→BR',data:dates.map(d=>toB(byDate[d]?.e||0)),borderColor:'#1a5c2e',backgroundColor:'rgba(26,92,46,.07)',tension:.3,pointRadius:dates.length>18?0:3,fill:true},
+    {label:'Imports CA←BR',data:dates.map(d=>toB(byDate[d]?.i||0)),borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.07)',tension:.3,pointRadius:dates.length>18?0:3,fill:true},
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toFixed(3)+'B'}}},
+    scales:{x:{ticks:{autoSkip:true,maxTicksLimit:14,font:{size:11}},grid:{display:false}},
+            y:{ticks:{callback:v=>'$'+v+'B',font:{size:11}}}}}});
+
+  /* ── Balance bars ── */
+  const balData=dates.map(d=>toB((byDate[d]?.e||0)-(byDate[d]?.i||0)));
+  dc('c-br-bal');
+  charts['c-br-bal']=new Chart(document.getElementById('c-br-bal'),{type:'bar',data:{labels:dates,datasets:[{
+    label:'Balance',data:balData,
+    backgroundColor:balData.map(v=>v>=0?'rgba(26,92,46,.75)':'rgba(192,57,43,.75)')
+  }]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Balance: $'+c.parsed.y.toFixed(3)+'B'}}},
+    scales:{x:{ticks:{autoSkip:true,maxTicksLimit:14,font:{size:11}},grid:{display:false}},
+            y:{ticks:{callback:v=>'$'+v+'B',font:{size:11}}}}}});
+
+  /* ── LatAm peers comparison ── */
+  const peers=['MX','BR','CL','AR','CO','PE','UY','EC'];
+  const peerNames={MX:'Mexico',BR:'Brazil',CL:'Chile',AR:'Argentina',CO:'Colombia',PE:'Peru',UY:'Uruguay',EC:'Ecuador'};
+  const peerData=peers.map(c=>{
+    const t=allCMf.filter(r=>r.country===c).reduce((s,r)=>s+(r.exports+r.imports),0);
+    return{c,name:peerNames[c]||c,t};
+  }).sort((a,b)=>b.t-a.t);
+  dc('c-br-peers');
+  charts['c-br-peers']=new Chart(document.getElementById('c-br-peers'),{type:'bar',data:{
+    labels:peerData.map(r=>r.name),
+    datasets:[{label:'Total trade',data:peerData.map(r=>toB(r.t)),
+      backgroundColor:peerData.map(r=>r.c==='BR'?'#1a5c2e':'rgba(26,92,46,.30)'),
+      borderColor:peerData.map(r=>r.c==='BR'?'#1a5c2e':'rgba(26,92,46,.50)'),borderWidth:1}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>CNAMES[peerData[c.dataIndex].c]||peerData[c.dataIndex].c+': $'+c.parsed.x.toFixed(2)+'B'}}},
+    scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:11}}},y:{ticks:{font:{size:11}}}}}});
+
+  /* ── Opportunity matrix: Brazil export potential → Canada ── */
+  const hsAgg={};
+  D.hs2_monthly.filter(r=>(!from||r.date>=from)&&(!to||r.date<=to)).forEach(r=>{
+    if(!hsAgg[r.hs2])hsAgg[r.hs2]={name:r.name,imports:0,exports:0};
+    hsAgg[r.hs2].imports+=r.imports;
+    hsAgg[r.hs2].exports+=r.exports;
+  });
+  const oppPoints=Object.entries(hsAgg)
+    .filter(([hs])=>BR_STRENGTH[hs])
+    .map(([hs,d])=>{
+      const br=BR_STRENGTH[hs];
+      const x=toB(d.imports);
+      const y=br.score;
+      const r=Math.min(Math.sqrt(x*y/100)*9+4,38);
+      return{x,y,r,label:d.name,hs,note:br.note};
+    }).sort((a,b)=>b.r-a.r);
+
+  dc('c-br-opp');
+  charts['c-br-opp']=new Chart(document.getElementById('c-br-opp'),{type:'bubble',data:{datasets:[{
+    label:'Opportunity',
+    data:oppPoints.map(p=>({x:p.x,y:p.y,r:p.r})),
+    backgroundColor:oppPoints.map(p=>p.r>22?'rgba(26,92,46,.72)':p.r>13?'rgba(245,166,35,.68)':'rgba(192,57,43,.52)'),
+    borderColor:oppPoints.map(p=>p.r>22?'#1a5c2e':p.r>13?'#f5a623':'#c0392b'),
+    borderWidth:1.5,
+  }]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>{
+      const p=oppPoints[ctx.dataIndex];
+      return[`📦 ${p.label}`,`CA imports: $${p.x.toFixed(1)}B`,`BR strength: ${p.y}/100`,`📌 ${p.note}`];
+    }}}},
+    scales:{
+      x:{title:{display:true,text:"Canada's Import Volume (CAD$B)",font:{size:12}},ticks:{callback:v=>'$'+v+'B'}},
+      y:{title:{display:true,text:"Brazil Competitiveness (0–100)",font:{size:12}},min:0,max:100,ticks:{callback:v=>v}},
+    }}});
+
+  /* ── Canada export strengths → Brazil ── */
+  const caOpp=Object.entries(hsAgg)
+    .filter(([hs])=>CA_STRENGTH[hs])
+    .map(([hs,d])=>({hs,name:d.name,exports:toB(d.exports),score:CA_STRENGTH[hs].score,note:CA_STRENGTH[hs].note}))
+    .sort((a,b)=>(b.exports*b.score)-(a.exports*a.score))
+    .slice(0,10);
+  dc('c-ca-opp');
+  charts['c-ca-opp']=new Chart(document.getElementById('c-ca-opp'),{type:'bar',data:{
+    labels:caOpp.map(r=>r.name.length>32?r.name.slice(0,31)+'…':r.name),
+    datasets:[
+      {label:"Canada's World Exports ($B)",data:caOpp.map(r=>r.exports),backgroundColor:'rgba(26,92,46,.75)',stack:'s'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>{
+      const it=caOpp[ctx.dataIndex];
+      return[`Exports: $${it.exports.toFixed(2)}B`,`CA strength: ${it.score}/100`,`📌 ${it.note}`];
+    }}}},
+    scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:11}}},y:{ticks:{font:{size:11}}}}}});
+
+  /* ── Strategic insights ── */
+  document.getElementById('br-insights').innerHTML=INSIGHTS_STATIC.map(ins=>`
+    <div style="background:var(--surf);border:1px solid var(--bdr);border-left:4px solid ${ins.color};border-radius:var(--rad);padding:16px 18px;box-shadow:var(--shd)">
+      <div style="margin-bottom:7px"><span style="font-size:18px">${ins.icon}</span> <strong style="color:${ins.color};font-size:13px;letter-spacing:.01em">${ins.title}</strong></div>
+      <p style="font-size:13px;color:var(--text);line-height:1.65;margin:0">${ins.text}</p>
+    </div>`).join('');
+
+  /* ── Monthly detail table ── */
+  document.getElementById('br-tbody').innerHTML=[...dates].reverse().map(d=>{
+    const e=byDate[d]?.e||0,i=byDate[d]?.i||0,b=e-i;
+    return`<tr><td><strong>${d}</strong></td><td>${fmt(e)}</td><td>${fmt(i)}</td><td style="color:${b>=0?'#16a34a':'#c0392b'}">${fmt(b)}</td><td>${fmt(e+i)}</td></tr>`;
+  }).join('');
+
+  /* Update filter info */
+  const el=document.getElementById('fi-brazil');
+  if(el)el.textContent='Brazil Focus · '+(from||'all')+' → '+(to||'latest');
+}
+
 /* ── LOAD ALL DATA (from local JSON files) ── */
 async function load(){
   document.getElementById('loading').style.display='flex';
@@ -1998,7 +2275,7 @@ function af(){
   ra();
 }
 
-function ra(){ro();rm();rc();rhs();}
+function ra(){ro();rm();rc();rhs();rb();}
 
 /* ══════════════════ OVERVIEW ══════════════════ */
 function ro(){
@@ -2275,7 +2552,7 @@ function rhs(){
 
 function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 function st(n){
-  const ns=['overview','monthly','countries','products'];
+  const ns=['overview','monthly','countries','products','brazil'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ns[i]===n));
   document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id==='tab-'+n));
 }
