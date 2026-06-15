@@ -12,6 +12,7 @@ When the OLD format is detected, HS codes are normalised to HS6 BEFORE grouping
 '2709.00.10' and '2709.00.29' were kept separate instead of being rolled up).
 
 Input:  data/canada_trade.parquet  (local)  or  HuggingFace  (--hf flag)
+        data/canada_trade_provinces.parquet  (optional, from table 12-10-0088-01)
 Output: data/*.json
 
   monthly.json              [{date, imports, exports, balance}]
@@ -20,6 +21,8 @@ Output: data/*.json
   commodities.json          [{commodity, imports, exports, total}]
   commodities_monthly.json  [{date, commodity, imports, exports, total}]
   metadata.json             {last_updated, data_source, first_period, ...}
+  provinces.json            [{code, name, exports, imports, total}]            (if provincial data available)
+  provinces_commodities.json [{code, hs2, commodity, exports, imports}]        (if provincial data available)
 """
 
 from __future__ import annotations
@@ -34,7 +37,8 @@ import pandas as pd
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)s  %(message)s")
 LOG = logging.getLogger(__name__)
 
-LOCAL   = "data/canada_trade.parquet"
+LOCAL          = "data/canada_trade.parquet"
+LOCAL_PROVINCE = "data/canada_trade_provinces.parquet"
 OUT_DIR = pathlib.Path("data")
 TOP_N   = 20
 
@@ -43,6 +47,19 @@ HF_URLS = [
     "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade.parquet",
     "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade_full.parquet",
 ]
+
+HF_PROVINCE_URL = (
+    "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade_provinces.parquet"
+)
+
+PROVINCE_CODES = {
+    "Alberta": "AB", "British Columbia": "BC", "Manitoba": "MB",
+    "New Brunswick": "NB", "Newfoundland and Labrador": "NL",
+    "Northwest Territories": "NT", "Nova Scotia": "NS", "Nunavut": "NU",
+    "Ontario": "ON", "Prince Edward Island": "PE",
+    "Quebec": "QC", "Québec": "QC", "Saskatchewan": "SK",
+    "Yukon Territory": "YT", "Yukon": "YT",
+}
 
 # ── HS2 chapter names (for legacy format conversion) ─────────────────────────
 
@@ -271,6 +288,73 @@ def build_commodities_monthly(df: pd.DataFrame) -> list[dict]:
     return sorted(_records(pivot, ["date", "commodity"]), key=lambda r: (r["date"], -r["total"]))
 
 
+def _load_province_data(use_hf: bool = False) -> pd.DataFrame | None:
+    """
+    Load provincial trade data from table 12-10-0088-01 (if available).
+    Schema expected: date, trade_type, province, commodity, value_cad, row_type
+    Returns None if not available.
+    """
+    if use_hf:
+        try:
+            LOG.info("Trying province parquet from HuggingFace …")
+            df = pd.read_parquet(HF_PROVINCE_URL)
+            LOG.info("  Province data OK (%d rows)", len(df))
+            return df
+        except Exception as e:
+            LOG.info("  Province HF data not available: %s", e)
+            return None
+    else:
+        if not pathlib.Path(LOCAL_PROVINCE).exists():
+            return None
+        try:
+            LOG.info("Loading province data from %s …", LOCAL_PROVINCE)
+            return pd.read_parquet(LOCAL_PROVINCE)
+        except Exception as e:
+            LOG.warning("Cannot load %s: %s", LOCAL_PROVINCE, e)
+            return None
+
+
+def build_provinces(df_prov: pd.DataFrame) -> list[dict]:
+    """Build province totals: [{code, name, exports, imports, total}]."""
+    prov_col = next((c for c in df_prov.columns if "province" in c.lower() or "geo" in c.lower()), None)
+    if prov_col is None:
+        LOG.warning("No province column found — skipping")
+        return []
+
+    totals = _rows(df_prov, "country_total") if "row_type" in df_prov.columns else df_prov
+    pivot = _pivot(totals, [prov_col])
+    results = []
+    for _, row in pivot.iterrows():
+        raw_name = str(row[prov_col]).strip()
+        code = PROVINCE_CODES.get(raw_name, raw_name[:2].upper())
+        name = raw_name if raw_name not in PROVINCE_CODES else raw_name
+        imp = int(row.get("Import", 0))
+        exp = int(row.get("Export", 0))
+        results.append({"code": code, "name": name, "exports": exp, "imports": imp, "total": imp + exp})
+    return sorted(results, key=lambda r: -r["total"])
+
+
+def build_provinces_commodities(df_prov: pd.DataFrame) -> list[dict]:
+    """Build province×commodity breakdown: [{code, hs2, commodity, exports, imports}]."""
+    prov_col = next((c for c in df_prov.columns if "province" in c.lower() or "geo" in c.lower()), None)
+    if prov_col is None:
+        return []
+
+    details = _rows(df_prov, "detail") if "row_type" in df_prov.columns else df_prov
+    pivot = _pivot(details, [prov_col, "commodity"])
+    results = []
+    for _, row in pivot.iterrows():
+        raw_name = str(row[prov_col]).strip()
+        code = PROVINCE_CODES.get(raw_name, raw_name[:2].upper())
+        commodity = str(row["commodity"]).strip()
+        hs2 = commodity[:2] if len(commodity) >= 2 else "00"
+        imp = int(row.get("Import", 0))
+        exp = int(row.get("Export", 0))
+        results.append({"code": code, "hs2": hs2, "commodity": commodity,
+                        "exports": exp, "imports": imp, "total": imp + exp})
+    return sorted(results, key=lambda r: (-r["total"], r["code"]))
+
+
 def build_metadata(df: pd.DataFrame) -> dict:
     # Detect whether data came from legacy or new format
     has_row_types = df["row_type"].nunique() > 1
@@ -309,6 +393,15 @@ def run(use_hf: bool = False) -> None:
     _save(build_commodities(df),          "commodities.json")
     _save(build_commodities_monthly(df),  "commodities_monthly.json")
     _save(build_metadata(df),             "metadata.json")
+
+    # Province data (optional — from table 12-10-0088-01)
+    df_prov = _load_province_data(use_hf=use_hf)
+    if df_prov is not None:
+        LOG.info("Building province JSON files …")
+        _save(build_provinces(df_prov),              "provinces.json")
+        _save(build_provinces_commodities(df_prov),  "provinces_commodities.json")
+    else:
+        LOG.info("No province data available — skipping provinces.json (static file in data/ will be used)")
 
     LOG.info("Done. Dashboard data ready in %s/", OUT_DIR)
 
