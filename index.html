@@ -2708,7 +2708,7 @@ async function renderProvMap(){
     .attr('viewBox',`0 0 ${W} ${H}`)
     .style('overflow','visible');
 
-  const projection=d3.geoMercator().fitSize([W-20,H-20],geo).translate([W/2,H/2-10]);
+  const projection=d3.geoMercator().fitExtent([[20,20],[W-20,H-20]],geo);
   const path=d3.geoPath().projection(projection);
 
   /* Tooltip div */
