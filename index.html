@@ -98,6 +98,13 @@ tbody tr:hover{background:var(--gl);}
 footer{text-align:center;padding:18px;font-size:12px;color:rgba(255,255,255,.6);background:var(--gd);border-top:3px solid var(--red);margin-top:40px;}
 footer a{color:rgba(255,255,255,.85);text-decoration:none;}footer a:hover{color:#fff;}
 .src-note{font-size:11px;color:var(--muted);text-align:right;margin-top:6px;}
+/* ── PROVINCE MAP ── */
+#prov-map-wrap{width:100%;min-height:480px;position:relative;overflow:hidden;background:var(--bg);border-radius:6px;}
+.prov-path{transition:stroke .1s,stroke-width .1s;cursor:pointer;}
+#prov-panel{display:none;background:var(--surf);border:1px solid var(--gd);border-radius:var(--rad);padding:24px;box-shadow:0 4px 20px rgba(26,92,46,.15);margin-bottom:20px;}
+#prov-panel.visible{display:block;}
+.prov-tooltip{position:fixed;background:rgba(15,40,20,.88);color:#fff;padding:8px 13px;border-radius:7px;font-size:12px;line-height:1.5;pointer-events:none;z-index:99;display:none;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.prov-icon{font-size:28px;margin-right:8px;line-height:1;}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1.8/dist/polyfill.js"></script>
   <script>
@@ -1639,6 +1646,7 @@ z"/>
   <div class="tab" onclick="st('countries')">By country</div>
   <div class="tab" onclick="st('products')">Products (HS)</div>
   <div class="tab" onclick="st('brazil')">🇧🇷 Brazil Focus</div>
+  <div class="tab" onclick="st('province')">🗺️ By Province</div>
 </div>
 
 <main>
@@ -1847,6 +1855,76 @@ z"/>
     </div>
   </div>
 
+  <!-- BY PROVINCE -->
+  <div class="section" id="tab-province">
+    <div class="finfo" id="fi-province"></div>
+
+    <!-- Interactive Canada Map -->
+    <div class="chart-grid">
+      <div class="chart-card full-width">
+        <h3>🍁 Canada Trade by Province &amp; Territory</h3>
+        <div class="csub">Click any province or territory to explore top exports &amp; imports · Darker fill = higher total trade volume</div>
+        <div id="prov-map-wrap"><div style="display:flex;align-items:center;justify-content:center;height:480px"><div class="spinner"></div></div></div>
+        <div class="map-legend" style="margin-top:10px">
+          <div class="map-legend-item"><div class="map-legend-swatch" style="background:#1a5c2e"></div>Highest trade (ON/AB)</div>
+          <div class="map-legend-item"><div class="map-legend-swatch" style="background:#6aab7f"></div>High trade</div>
+          <div class="map-legend-item"><div class="map-legend-swatch" style="background:#b5d9bf"></div>Moderate trade</div>
+          <div class="map-legend-item"><div class="map-legend-swatch" style="background:#e6f2ea"></div>Lower trade</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Province detail panel (shows when clicking map) -->
+    <div id="prov-panel">
+      <div class="cp-header">
+        <div class="cp-title">
+          <div class="prov-icon" id="prov-icon">🍁</div>
+          <div><h2 id="prov-name">Province</h2><p id="prov-subtitle">Merchandise trade · Statistics Canada table 12-10-0088-01</p></div>
+        </div>
+        <button class="cp-close" onclick="closeProvPanel()">✕ Close</button>
+      </div>
+      <div class="cp-kpis" id="prov-kpis"></div>
+      <div class="cp-charts">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--gd);margin-bottom:10px" id="prov-exp-title">Top Exports</div>
+          <div style="position:relative;height:260px"><canvas id="prov-exp-chart"></canvas></div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--gd);margin-bottom:10px" id="prov-imp-title">Top Imports</div>
+          <div style="position:relative;height:260px"><canvas id="prov-imp-chart"></canvas></div>
+        </div>
+      </div>
+      <div style="margin-top:18px;overflow-x:auto">
+        <table>
+          <thead><tr><th>HS2</th><th>Product Category</th><th>Exports</th><th>Imports</th><th>Balance</th><th>Total</th></tr></thead>
+          <tbody id="prov-detail-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- All provinces overview -->
+    <div class="chart-grid">
+      <div class="chart-card full-width">
+        <h3>All Provinces &amp; Territories — Trade Ranking</h3>
+        <div class="csub">Click a bar to drill down · CAD$ billions · approximate 2023 annual figures</div>
+        <div class="legend">
+          <div class="legend-item"><div class="ldot" style="background:#1a5c2e"></div>Exports</div>
+          <div class="legend-item"><div class="ldot" style="background:#f5a623"></div>Imports</div>
+        </div>
+        <div style="position:relative;min-height:360px"><canvas id="prov-bar"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <h3>All Provinces &amp; Territories — Summary</h3>
+      <table>
+        <thead><tr><th>#</th><th>Province / Territory</th><th>Exports</th><th>Imports</th><th>Balance</th><th>Total Trade</th><th>Export Share</th></tr></thead>
+        <tbody id="prov-all-tbody"></tbody>
+      </table>
+    </div>
+    <div class="src-note">Approximate 2023 annual merchandise trade (customs basis) · Statistics Canada table 12-10-0088-01 · Values for reference only</div>
+  </div>
+
 </main>
 
 <footer>
@@ -1939,7 +2017,7 @@ const HS_CODE_FROM_NAME = {
 };
 
 /* parsed datasets */
-let D = { monthly:[], countries:[], countries_monthly:[], hs2_summary:[], hs2_monthly:[] };
+let D = { monthly:[], countries:[], countries_monthly:[], hs2_summary:[], hs2_monthly:[], provinces:[], provinces_commodities:[] };
 let defaultFrom='', defaultTo='';
 let charts={};
 
@@ -2194,6 +2272,16 @@ async function load(){
     ));
     const [monthly,countries,cm,commodities,hsm,meta]=results;
 
+    /* province data — non-fatal if missing */
+    try{
+      const [provs,provCom]=await Promise.all([
+        fetch('data/provinces.json?t='+Date.now()).then(r=>r.json()),
+        fetch('data/provinces_commodities.json?t='+Date.now()).then(r=>r.json()),
+      ]);
+      D.provinces=provs;
+      D.provinces_commodities=provCom;
+    }catch(e){console.warn('Province data not available:',e.message);}
+
     /* monthly: format matches directly */
     D.monthly=monthly.map(r=>({date:r.date,imports:r.imports,exports:r.exports,balance:r.balance}));
 
@@ -2275,7 +2363,7 @@ function af(){
   ra();
 }
 
-function ra(){ro();rm();rc();rhs();rb();}
+function ra(){ro();rm();rc();rhs();rb();rp();}
 
 /* ══════════════════ OVERVIEW ══════════════════ */
 function ro(){
@@ -2550,11 +2638,295 @@ function rhs(){
   </tr>`).join('');
 }
 
+/* ══════════════════ BY PROVINCE ══════════════════ */
+const PROVINCE_META={
+  AB:{name:'Alberta',icon:'🌾',capital:'Edmonton'},
+  BC:{name:'British Columbia',icon:'🌲',capital:'Victoria'},
+  MB:{name:'Manitoba',icon:'🌾',capital:'Winnipeg'},
+  NB:{name:'New Brunswick',icon:'🌲',capital:'Fredericton'},
+  NL:{name:'Newfoundland & Labrador',icon:'🐟',capital:"St. John's"},
+  NS:{name:'Nova Scotia',icon:'🐟',capital:'Halifax'},
+  NT:{name:'Northwest Territories',icon:'💎',capital:'Yellowknife'},
+  NU:{name:'Nunavut',icon:'❄️',capital:'Iqaluit'},
+  ON:{name:'Ontario',icon:'🏭',capital:'Toronto'},
+  PE:{name:'Prince Edward Island',icon:'🥔',capital:'Charlottetown'},
+  QC:{name:'Quebec',icon:'✈️',capital:'Quebec City'},
+  SK:{name:'Saskatchewan',icon:'🌾',capital:'Regina'},
+  YT:{name:'Yukon',icon:'⛏️',capital:'Whitehorse'},
+};
+
+const PROV_NAME_TO_CODE={
+  'Alberta':'AB','British Columbia':'BC','Manitoba':'MB',
+  'New Brunswick':'NB','Newfoundland and Labrador':'NL',
+  'Northwest Territories':'NT','Nova Scotia':'NS','Nunavut':'NU',
+  'Ontario':'ON','Prince Edward Island':'PE',
+  'Quebec':'QC','Québec':'QC','Saskatchewan':'SK',
+  'Yukon Territory':'YT','Yukon':'YT',
+};
+
+let _provGeo=null;
+
+async function _loadProvGeo(){
+  if(_provGeo)return _provGeo;
+  try{
+    const r=await fetch('data/canada-provinces.geojson');
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    _provGeo=await r.json();
+    return _provGeo;
+  }catch(e){console.error('Province GeoJSON:',e);return null;}
+}
+
+function rp(){
+  renderProvOverview();
+  document.getElementById('fi-province').textContent='By Province · All 10 provinces + 3 territories · Approximate 2023 annual merchandise trade';
+}
+
+async function renderProvMap(){
+  const wrap=document.getElementById('prov-map-wrap');
+  if(!wrap)return;
+  if(wrap.querySelector('svg'))return; // already rendered
+  wrap.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:480px"><div class="spinner"></div></div>';
+
+  const geo=await _loadProvGeo();
+  if(!geo){
+    wrap.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;color:var(--muted)">Map unavailable — use table below</div>';
+    return;
+  }
+
+  wrap.innerHTML='';
+  const W=wrap.clientWidth||800, H=Math.min(Math.round(W*0.62),520);
+
+  const totalByCode={};
+  D.provinces.forEach(p=>{totalByCode[p.code]=p.total;});
+  const vals=Object.values(totalByCode).filter(v=>v>0);
+  const logScale=d3.scaleLog().domain([Math.min(...vals),Math.max(...vals)]).range([0.05,1]).clamp(true);
+
+  const colorFn=t=>d3.interpolate('#d9eee1','#1a5c2e')(t);
+
+  const svg=d3.select(wrap).append('svg')
+    .attr('width','100%').attr('height',H)
+    .attr('viewBox',`0 0 ${W} ${H}`)
+    .style('overflow','visible');
+
+  const projection=d3.geoMercator().fitSize([W-20,H-20],geo).translate([W/2,H/2-10]);
+  const path=d3.geoPath().projection(projection);
+
+  /* Tooltip div */
+  let tip=document.getElementById('prov-tip');
+  if(!tip){tip=document.createElement('div');tip.id='prov-tip';tip.className='prov-tooltip';document.body.appendChild(tip);}
+
+  const g=svg.append('g');
+
+  g.selectAll('.prov-path')
+    .data(geo.features)
+    .join('path')
+    .attr('class','prov-path')
+    .attr('d',path)
+    .attr('fill',d=>{
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      const tot=totalByCode[code]||0;
+      return tot?colorFn(logScale(tot)):'#d0d8d0';
+    })
+    .attr('stroke','#fff')
+    .attr('stroke-width',0.8)
+    .on('mousemove',function(event,d){
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      const prov=D.provinces.find(p=>p.code===code);
+      d3.select(this).attr('stroke','#f5a623').attr('stroke-width',2);
+      if(prov){
+        tip.style.display='block';
+        tip.style.left=(event.clientX+14)+'px';
+        tip.style.top=(event.clientY-10)+'px';
+        const m=PROVINCE_META[code]||{};
+        tip.innerHTML=`<strong>${m.icon||''} ${prov.name} (${code})</strong><br>`+
+          `Exports: ${fmt(prov.exports)}<br>Imports: ${fmt(prov.imports)}<br>`+
+          `Total: <strong>${fmt(prov.total)}</strong><br>`+
+          `<em style="font-size:10px;opacity:.7">Click to explore →</em>`;
+      }
+    })
+    .on('mouseleave',function(){
+      d3.select(this).attr('stroke','#fff').attr('stroke-width',0.8);
+      tip.style.display='none';
+    })
+    .on('click',function(event,d){
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      if(code)openProvPanel(code);
+      tip.style.display='none';
+    });
+
+  /* Province abbreviation labels */
+  const labelOffsets={NT:[0,-12],NU:[10,0],QC:[0,8],ON:[8,12],BC:[0,0],AB:[0,0],SK:[0,0],MB:[0,0],YT:[0,0],NL:[8,0]};
+  g.selectAll('.prov-label')
+    .data(geo.features)
+    .join('text')
+    .attr('class','prov-label')
+    .attr('x',d=>{
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      const c=path.centroid(d);
+      return c[0]+(labelOffsets[code]?.[0]||0);
+    })
+    .attr('y',d=>{
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      const c=path.centroid(d);
+      return c[1]+(labelOffsets[code]?.[1]||0);
+    })
+    .attr('text-anchor','middle')
+    .attr('dominant-baseline','middle')
+    .attr('font-size',d=>{
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      return ['NT','NU','QC','ON','BC','AB','SK','MB'].includes(code)?'12px':'10px';
+    })
+    .attr('font-weight','700')
+    .attr('fill',d=>{
+      const nm=d.properties.name||'';
+      const code=PROV_NAME_TO_CODE[nm]||'';
+      return logScale(totalByCode[code]||1)>0.4?'#fff':'#1c1c1c';
+    })
+    .attr('pointer-events','none')
+    .attr('paint-order','stroke')
+    .attr('stroke','rgba(0,0,0,.25)')
+    .attr('stroke-width','2px')
+    .text(d=>PROV_NAME_TO_CODE[d.properties.name||'']||'');
+}
+
+function openProvPanel(code){
+  const meta=PROVINCE_META[code]||{name:code,icon:'🍁'};
+  const prov=D.provinces.find(p=>p.code===code)||{exports:0,imports:0,total:0};
+  const comms=D.provinces_commodities.filter(c=>c.code===code);
+  const totalAll=D.provinces.reduce((s,p)=>s+p.total,0);
+
+  document.getElementById('prov-icon').textContent=meta.icon;
+  document.getElementById('prov-name').textContent=meta.name+' ('+code+')';
+  document.getElementById('prov-subtitle').textContent=(meta.capital?' Capital: '+meta.capital+' · ':'')+
+    'Merchandise trade · approx. 2023 annual · customs basis';
+
+  const bal=prov.exports-prov.imports;
+  document.getElementById('prov-kpis').innerHTML=[
+    {l:'Total Exports',v:fmt(prov.exports),c:''},
+    {l:'Total Imports',v:fmt(prov.imports),c:'rt'},
+    {l:'Trade Balance',v:fmt(bal),c:'gt',vc:bal>=0?'kpi-up':'kpi-down'},
+    {l:'Share of Canada',v:totalAll?(prov.total/totalAll*100).toFixed(1)+'%':'—',c:'',sub:'of all provincial trade'},
+  ].map(k=>`<div class="cp-kpi"><div class="kpi-label">${k.l}</div>
+    <div class="kpi-value ${k.vc||''}">${k.v}</div>
+    ${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
+
+  /* Sort commodities */
+  const expSorted=[...comms].sort((a,b)=>b.exports-a.exports).slice(0,7);
+  const impSorted=[...comms].sort((a,b)=>b.imports-a.imports).slice(0,7);
+
+  dc('prov-exp-chart');
+  charts['prov-exp-chart']=new Chart(document.getElementById('prov-exp-chart'),{
+    type:'bar',
+    data:{
+      labels:expSorted.map(c=>c.hs2+' '+c.commodity.substring(0,22)),
+      datasets:[{label:'Exports',data:expSorted.map(c=>toB(c.exports)),backgroundColor:'#1a5c2e',borderRadius:4}]
+    },
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.x.toFixed(1)+'B'}}},
+      scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:10}},grid:{color:'#f0f3f0'}},
+              y:{ticks:{font:{size:10}}}}}
+  });
+
+  dc('prov-imp-chart');
+  charts['prov-imp-chart']=new Chart(document.getElementById('prov-imp-chart'),{
+    type:'bar',
+    data:{
+      labels:impSorted.map(c=>c.hs2+' '+c.commodity.substring(0,22)),
+      datasets:[{label:'Imports',data:impSorted.map(c=>toB(c.imports)),backgroundColor:'#f5a623',borderRadius:4}]
+    },
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.x.toFixed(1)+'B'}}},
+      scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:10}},grid:{color:'#f0f3f0'}},
+              y:{ticks:{font:{size:10}}}}}
+  });
+
+  /* Detail table — union of exp+imp commodities */
+  const allCodes=[...new Set(comms.map(c=>c.hs2))];
+  const rows=allCodes.map(hs=>{
+    const row=comms.find(c=>c.hs2===hs)||{commodity:'',exports:0,imports:0};
+    return{hs2:hs,commodity:row.commodity,exports:row.exports,imports:row.imports,total:row.exports+row.imports};
+  }).sort((a,b)=>b.total-a.total);
+
+  document.getElementById('prov-detail-tbody').innerHTML=rows.map(r=>`<tr>
+    <td style="color:var(--muted);font-size:12px"><strong>${r.hs2}</strong></td>
+    <td>${r.commodity}</td>
+    <td>${fmt(r.exports)}</td>
+    <td>${fmt(r.imports)}</td>
+    <td style="color:${r.exports>=r.imports?'#16a34a':'#c0392b'}">${fmt(r.exports-r.imports)}</td>
+    <td><strong>${fmt(r.total)}</strong></td>
+  </tr>`).join('');
+
+  const panel=document.getElementById('prov-panel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeProvPanel(){
+  document.getElementById('prov-panel').classList.remove('visible');
+  ['prov-exp-chart','prov-imp-chart'].forEach(id=>dc(id));
+}
+
+function renderProvOverview(){
+  if(!D.provinces.length)return;
+  const sorted=[...D.provinces].sort((a,b)=>b.total-a.total);
+  const totalAll=sorted.reduce((s,p)=>s+p.total,0);
+
+  /* Bar chart */
+  dc('prov-bar');
+  const barEl=document.getElementById('prov-bar');
+  if(barEl){
+    const barH=Math.max(360,sorted.length*26);
+    barEl.parentElement.style.minHeight=barH+'px';
+    charts['prov-bar']=new Chart(barEl,{
+      type:'bar',
+      data:{
+        labels:sorted.map(p=>{const m=PROVINCE_META[p.code]||{};return(m.icon||'')+' '+p.name+' ('+p.code+')';}),
+        datasets:[
+          {label:'Exports',data:sorted.map(p=>toB(p.exports)),backgroundColor:'#1a5c2e',borderRadius:3,stack:'s'},
+          {label:'Imports',data:sorted.map(p=>toB(p.imports)),backgroundColor:'#f5a623',borderRadius:3,stack:'s'},
+        ]
+      },
+      options:{
+        indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},
+          tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': $'+ctx.parsed.x.toFixed(1)+'B'}}},
+        scales:{x:{stacked:true,ticks:{callback:v=>'$'+v+'B',font:{size:10}},grid:{color:'#f0f3f0'}},
+                y:{stacked:true,ticks:{font:{size:11}}}},
+        onClick:(evt,items)=>{if(items.length){const idx=items[0].index;openProvPanel(sorted[idx].code);}}
+      }
+    });
+  }
+
+  /* All provinces summary table */
+  document.getElementById('prov-all-tbody').innerHTML=sorted.map((p,i)=>{
+    const meta=PROVINCE_META[p.code]||{};
+    const bal=p.exports-p.imports;
+    const balCls=bal>=0?'bs':'bd';
+    const share=totalAll?(p.total/totalAll*100).toFixed(1)+'%':'—';
+    return`<tr style="cursor:pointer" onclick="openProvPanel('${p.code}')">
+      <td style="color:var(--muted)">${i+1}</td>
+      <td><strong>${meta.icon||''} ${p.name}</strong><span style="color:var(--muted);font-size:11px;margin-left:6px">${p.code}</span></td>
+      <td>${fmt(p.exports)}</td>
+      <td>${fmt(p.imports)}</td>
+      <td><span class="badge ${balCls}">${fmt(bal)}</span></td>
+      <td><strong>${fmt(p.total)}</strong></td>
+      <td>${share}</td>
+    </tr>`;
+  }).join('');
+}
+
 function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 function st(n){
-  const ns=['overview','monthly','countries','products','brazil'];
+  const ns=['overview','monthly','countries','products','brazil','province'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ns[i]===n));
   document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id==='tab-'+n));
+  if(n==='province')renderProvMap();
 }
 document.getElementById('tab-overview').classList.add('active');
 load();

@@ -6,23 +6,23 @@ Download Canadian merchandise trade data directly from Statistics Canada.
 Source tables (public bulk download, no auth required):
   12-10-0011-01  Merchandise imports by product section/chapter and trade partner
   12-10-0012-01  Merchandise exports by product section/chapter and trade partner
+  12-10-0088-01  Merchandise imports and domestic exports by province/territory  (optional --provinces flag)
 
 URL pattern: https://www150.statcan.gc.ca/n1/tbl/csv/{pid}-eng.zip
 
+NOTE: GitHub Actions blocks connections to www150.statcan.gc.ca. Run this script
+locally, then upload the resulting parquet(s) to HuggingFace with upload_hf.py.
+
 Output: data/canada_trade.parquet
-Schema:
+        data/canada_trade_provinces.parquet  (when --provinces flag is used)
+
+Schema (both parquet files):
   date        str   "YYYY-MM"
   trade_type  str   "Import" | "Export"
-  partner     str   Trading partner name
+  partner     str   Trading partner name  (national file) or province name (province file)
   commodity   str   HS chapter / section name
   value_cad   int   Canadian dollars
   row_type    str   "grand_total" | "country_total" | "commodity_total" | "detail"
-
-row_type classification:
-  detail          – specific partner AND specific commodity
-  country_total   – specific partner, commodity is "Total, all …"
-  commodity_total – partner is "Total, all …", specific commodity
-  grand_total     – both partner AND commodity are "Total, all …"
 """
 
 from __future__ import annotations
@@ -44,6 +44,9 @@ TABLES: dict[str, str] = {
     "12100011": "Import",   # Table 12-10-0011-01: Merchandise imports
     "12100012": "Export",   # Table 12-10-0012-01: Merchandise exports
 }
+
+# Table 12-10-0088-01: Merchandise imports & domestic exports by province/territory
+PROVINCE_TABLE = "12100088"
 
 _DL_URL = "https://www150.statcan.gc.ca/n1/tbl/csv/{pid}-eng.zip"
 
@@ -204,8 +207,56 @@ def run(out: str = "data/canada_trade.parquet") -> pd.DataFrame:
     return df
 
 
+def run_provinces(out: str = "data/canada_trade_provinces.parquet") -> pd.DataFrame:
+    """
+    Download table 12-10-0088-01 (merchandise trade by province/territory).
+    NOTE: Produces a parquet with 'province' replacing 'partner' column.
+    """
+    raw_bytes = _download(PROVINCE_TABLE)
+    raw_df    = _open_csv(raw_bytes, PROVINCE_TABLE)
+
+    # This table has GEO = province name, not "Canada"
+    scale = _get_scale(raw_df)
+    dims  = _detect_dims(raw_df)
+    partner_col, commodity_col = _label_dims(dims)
+    LOG.info("Province table dims=%s  partner=%s  commodity=%s", dims, partner_col, commodity_col)
+
+    # Exclude national totals (keep only province-level rows)
+    df = raw_df[raw_df["GEO"].str.strip() != "Canada"].copy()
+    if df.empty:
+        raise ValueError("No province-level rows found in table 12-10-0088-01")
+
+    row_type = _classify_row_type(partner_col, commodity_col, df)
+    df["_v"] = pd.to_numeric(df["VALUE"], errors="coerce")
+    df = df[df["_v"].notna() & (df["_v"] > 0)].copy()
+    row_type = row_type.loc[df.index]
+
+    trade_type_col = next((c for c in dims if "trade" in c.lower()), None)
+
+    result = pd.DataFrame({
+        "date":       pd.to_datetime(df["REF_DATE"]).dt.to_period("M").astype(str),
+        "trade_type": df[trade_type_col].str.strip() if trade_type_col else "Total",
+        "province":   df["GEO"].str.strip(),
+        "commodity":  df[commodity_col].str.strip() if commodity_col else "Total",
+        "value_cad":  (df["_v"] * scale).astype("int64"),
+        "row_type":   row_type.values,
+    })
+
+    out_path = pathlib.Path(out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    result.to_parquet(out_path, index=False, engine="pyarrow", compression="snappy")
+    LOG.info("Province data saved → %s (%d rows)", out_path, len(result))
+    return result
+
+
 if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser(description="Download Statistics Canada trade tables")
     ap.add_argument("--out", default="data/canada_trade.parquet")
-    run(out=ap.parse_args().out)
+    ap.add_argument("--provinces", action="store_true",
+                    help="Also download table 12-10-0088-01 (provincial trade)")
+    ap.add_argument("--out-provinces", default="data/canada_trade_provinces.parquet")
+    args = ap.parse_args()
+    run(out=args.out)
+    if args.provinces:
+        run_provinces(out=args.out_provinces)
