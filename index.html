@@ -1688,8 +1688,9 @@ z"/>
       </div>
       <div class="chart-card" style="display:flex;flex-direction:column">
         <h3>Top 10 Trading Partners</h3>
-        <div class="csub">Exports + Imports split by partner · click to drill down</div>
-        <div style="position:relative;flex:1;min-height:280px"><canvas id="c-tc" role="img" aria-label="Top 10"></canvas></div>
+        <div class="csub">Combined Exports + Imports by partner · Top 2–10 scaled for comparison</div>
+        <div id="tc-leader"></div>
+        <div style="position:relative;flex:1;min-height:240px"><canvas id="c-tc" role="img" aria-label="Top 10"></canvas></div>
       </div>
     </div>
   </div>
@@ -2516,7 +2517,7 @@ function ro(){
     }
   });
 
-  /* ── Top 10: stacked Exports + Imports per partner ── */
+  /* ── Top 10: #1 pinned + Top 2-10 bar at zoomed scale ── */
   const cm=filterCM(from,to);
   const byC={};
   cm.forEach(r=>{
@@ -2527,17 +2528,53 @@ function ro(){
   const top10=Object.entries(byC).filter(([c])=>c!=='CA')
     .map(([c,v])=>({c,e:v.e,i:v.i,t:v.e+v.i}))
     .sort((a,b)=>b.t-a.t).slice(0,10);
+
+  /* Pinned #1 leader row */
+  const leader=top10[0]||{c:'',e:0,i:0,t:0};
+  const rest=top10.slice(1);
+  const ldrTotal=toB(leader.t);
+  const ldrExp=toB(leader.e);
+  const ldrImp=toB(leader.i);
+  const ldrStr=ldrTotal>=1000?'$'+(ldrTotal/1000).toFixed(2)+'T':'$'+ldrTotal.toFixed(0)+'B';
+  const ldrExpPct=ldrTotal>0?(ldrExp/ldrTotal*100).toFixed(0):'50';
+  const ldrImpPct=ldrTotal>0?(ldrImp/ldrTotal*100).toFixed(0):'50';
+  const ldrEl=document.getElementById('tc-leader');
+  if(ldrEl&&leader.c){
+    ldrEl.innerHTML=`
+    <div style="background:#f0f9f2;border:1px solid #c3dfc9;border-radius:10px;padding:12px 14px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;font-weight:700;background:#1a5c2e;color:#fff;border-radius:5px;padding:2px 7px">#1</span>
+          <span style="font-size:13px;font-weight:600;color:#1a1d23">${CNAMES[leader.c]||leader.c}</span>
+          <span style="font-size:10px;color:#64748b">· outlier — shown at 100% width</span>
+        </div>
+        <span style="font-size:15px;font-weight:700;color:#1a5c2e;letter-spacing:-.02em">${ldrStr}</span>
+      </div>
+      <div style="height:9px;border-radius:5px;overflow:hidden;display:flex;gap:1px">
+        <div style="flex:${ldrExpPct};background:#1a5c2e;border-radius:4px 0 0 4px"></div>
+        <div style="flex:${ldrImpPct};background:#f5a623;border-radius:0 4px 4px 0"></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:6px;font-size:10px;color:#64748b">
+        <span><span style="display:inline-block;width:8px;height:8px;background:#1a5c2e;border-radius:2px;margin-right:4px"></span>Exports $${ldrExp.toFixed(0)}B (${ldrExpPct}%)</span>
+        <span><span style="display:inline-block;width:8px;height:8px;background:#f5a623;border-radius:2px;margin-right:4px"></span>Imports $${ldrImp.toFixed(0)}B (${ldrImpPct}%)</span>
+      </div>
+    </div>`;
+  }
+
+  /* Bar chart: top 2-10 only, X-axis scaled to #2 max */
+  const restMaxB=rest.length?Math.max(...rest.map(r=>toB(r.t))):100;
+  const xMax=Math.ceil(restMaxB*1.12/25)*25;
   const fmtAxis=v=>{
     if(v===0)return'$0';
-    if(v>=1000)return'$'+(v/1000).toFixed(v%1000===0?0:1)+'T';
+    if(v>=1000)return'$'+(v/1000).toFixed(1)+'T';
     return'$'+v+'B';
   };
   dc('c-tc');
   charts['c-tc']=new Chart(document.getElementById('c-tc'),{type:'bar',data:{
-    labels:top10.map(r=>CNAMES[r.c]||r.c),
+    labels:rest.map((r,i)=>`#${i+2} ${CNAMES[r.c]||r.c}`),
     datasets:[
-      {label:'Exports',data:top10.map(r=>toB(r.e)),backgroundColor:'rgba(26,92,46,.85)',borderRadius:3,stack:'s'},
-      {label:'Imports',data:top10.map(r=>toB(r.i)),backgroundColor:'rgba(245,166,35,.85)',borderRadius:3,stack:'s'},
+      {label:'Exports',data:rest.map(r=>toB(r.e)),backgroundColor:'rgba(26,92,46,.85)',borderRadius:3,stack:'s'},
+      {label:'Imports',data:rest.map(r=>toB(r.i)),backgroundColor:'rgba(245,166,35,.85)',borderRadius:3,stack:'s'},
     ]
   },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     interaction:{mode:'index',intersect:false},
@@ -2549,9 +2586,9 @@ function ro(){
       }}
     },
     scales:{
-      x:{stacked:true,ticks:{callback:fmtAxis,font:{size:10}},
+      x:{stacked:true,max:xMax,ticks:{callback:fmtAxis,font:{size:10}},
         grid:{color:'rgba(0,0,0,.05)'},border:{display:false}},
-      y:{stacked:true,ticks:{font:{size:11}},border:{display:false}}
+      y:{stacked:true,ticks:{font:{size:10.5}},border:{display:false}}
     }}});
 }
 
