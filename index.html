@@ -1691,6 +1691,7 @@ z"/>
         <div class="csub">Combined Exports + Imports by partner · Top 2–10 scaled for comparison</div>
         <div id="tc-leader"></div>
         <div style="position:relative;flex:1;min-height:240px"><canvas id="c-tc" role="img" aria-label="Top 10"></canvas></div>
+        <div class="src-note" style="margin-top:8px" id="tc-note"></div>
       </div>
     </div>
   </div>
@@ -2546,20 +2547,24 @@ function ro(){
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:10px;font-weight:700;background:#1a5c2e;color:#fff;border-radius:5px;padding:2px 7px">#1</span>
           <span style="font-size:13px;font-weight:600;color:#1a1d23">${CNAMES[leader.c]||leader.c}</span>
-          <span style="font-size:10px;color:#64748b">· outlier — shown at 100% width</span>
         </div>
-        <span style="font-size:15px;font-weight:700;color:#1a5c2e;letter-spacing:-.02em">${ldrStr}</span>
+        <div style="text-align:right">
+          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:2px">Combined Trade Value</div>
+          <div style="font-size:16px;font-weight:700;color:#1a5c2e;letter-spacing:-.02em">${ldrStr}</div>
+        </div>
       </div>
       <div style="height:9px;border-radius:5px;overflow:hidden;display:flex;gap:1px">
         <div style="flex:${ldrExpPct};background:#1a5c2e;border-radius:4px 0 0 4px"></div>
         <div style="flex:${ldrImpPct};background:#f5a623;border-radius:0 4px 4px 0"></div>
       </div>
-      <div style="display:flex;gap:16px;margin-top:6px;font-size:10px;color:#64748b">
+      <div style="display:flex;gap:16px;margin-top:7px;font-size:10px;color:#64748b">
         <span><span style="display:inline-block;width:8px;height:8px;background:#1a5c2e;border-radius:2px;margin-right:4px"></span>Exports $${ldrExp.toFixed(0)}B (${ldrExpPct}%)</span>
         <span><span style="display:inline-block;width:8px;height:8px;background:#f5a623;border-radius:2px;margin-right:4px"></span>Imports $${ldrImp.toFixed(0)}B (${ldrImpPct}%)</span>
       </div>
     </div>`;
   }
+  const noteEl=document.getElementById('tc-note');
+  if(noteEl&&leader.c)noteEl.textContent=`${CNAMES[leader.c]||leader.c} is a major outlier; chart below is scaled to compare remaining partners.`;
 
   /* Bar chart: top 2-10 only, X-axis scaled to #2 max */
   const restMaxB=rest.length?Math.max(...rest.map(r=>toB(r.t))):100;
