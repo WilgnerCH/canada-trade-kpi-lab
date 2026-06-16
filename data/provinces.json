@@ -1,15 +1,1 @@
-[
-{"code":"ON","name":"Ontario","exports":175200000000,"imports":324800000000,"total":500000000000},
-{"code":"AB","name":"Alberta","exports":168000000000,"imports":62000000000,"total":230000000000},
-{"code":"QC","name":"Quebec","exports":96900000000,"imports":105100000000,"total":202000000000},
-{"code":"BC","name":"British Columbia","exports":47200000000,"imports":91800000000,"total":139000000000},
-{"code":"SK","name":"Saskatchewan","exports":42100000000,"imports":7900000000,"total":50000000000},
-{"code":"MB","name":"Manitoba","exports":13200000000,"imports":10800000000,"total":24000000000},
-{"code":"NB","name":"New Brunswick","exports":14100000000,"imports":6900000000,"total":21000000000},
-{"code":"NL","name":"Newfoundland & Labrador","exports":12300000000,"imports":4700000000,"total":17000000000},
-{"code":"NS","name":"Nova Scotia","exports":5800000000,"imports":7200000000,"total":13000000000},
-{"code":"PE","name":"Prince Edward Island","exports":1000000000,"imports":1200000000,"total":2200000000},
-{"code":"NT","name":"Northwest Territories","exports":820000000,"imports":180000000,"total":1000000000},
-{"code":"YT","name":"Yukon","exports":390000000,"imports":160000000,"total":550000000},
-{"code":"NU","name":"Nunavut","exports":105000000,"imports":95000000,"total":200000000}
-]
+[{"code":"ON","name":"Ontario","exports":0,"imports":1103857245326,"total":1103857245326},{"code":"QC","name":"Quebec","exports":0,"imports":259741896566,"total":259741896566},{"code":"BC","name":"British Columbia","exports":0,"imports":176353162392,"total":176353162392},{"code":"AB","name":"Alberta","exports":0,"imports":91435952884,"total":91435952884},{"code":"MB","name":"Manitoba","exports":0,"imports":74415305004,"total":74415305004},{"code":"SK","name":"Saskatchewan","exports":0,"imports":40427417923,"total":40427417923},{"code":"NB","name":"New Brunswick","exports":0,"imports":38805410484,"total":38805410484},{"code":"NS","name":"Nova Scotia","exports":0,"imports":27537394466,"total":27537394466},{"code":"NL","name":"Newfoundland & Labrador","exports":0,"imports":9661553461,"total":9661553461},{"code":"NU","name":"Nunavut","exports":0,"imports":339803031,"total":339803031},{"code":"PE","name":"Prince Edward Island","exports":0,"imports":329538184,"total":329538184},{"code":"YT","name":"Yukon","exports":0,"imports":196653080,"total":196653080},{"code":"NT","name":"Northwest Territories","exports":0,"imports":130595571,"total":130595571}]
