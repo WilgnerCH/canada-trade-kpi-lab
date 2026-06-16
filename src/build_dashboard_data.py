@@ -180,12 +180,15 @@ def _extract_province_data(raw: pd.DataFrame) -> pd.DataFrame | None:
     Extract province-level aggregation from the raw parquet.
 
     The HuggingFace dataset includes a 'Province' column alongside 'Country'.
-    Province represents the Canadian origin (exports) or destination (imports).
+    In StatCan CIMTS: Province = customs-clearance province for imports.
+    Export rows often have no Province value and are excluded automatically.
 
     Steps mirror the user's clean_data_province() approach:
-      1. Group by date / trade_type / Province / HS  (deduplicate)
-      2. Extract HS2 chapter from raw HS code
-      3. Map province name → 2-letter code
+      1. Drop rows where Province is missing/blank
+      2. Group by date / trade_type / Province / HS  (deduplicate)
+      3. Filter to the last 12 months (annual window, not all-time cumulative)
+      4. Extract HS2 chapter from raw HS code
+      5. Map province name → 2-letter code
     """
     if "Province" not in raw.columns:
         LOG.info("No 'Province' column in dataset — province JSON will use static fallback")
@@ -200,6 +203,17 @@ def _extract_province_data(raw: pd.DataFrame) -> pd.DataFrame | None:
     except Exception:
         pass
 
+    # Drop rows where Province is null or blank (typically export rows in CIMTS)
+    df = df[df["Province"].notna() & (df["Province"].str.strip() != "")].copy()
+    if df.empty:
+        LOG.warning("Province column present but all values are empty — skipping")
+        return None
+
+    # Log trade_type distribution so we can confirm import-only vs both
+    if "trade_type" in df.columns:
+        tt_counts = df.groupby("trade_type").size().to_dict()
+        LOG.info("  Province rows by trade_type: %s", tt_counts)
+
     # Deduplicate (same as clean_data_province in the reference script)
     value_col = "Value" if "Value" in df.columns else "value_cad"
     df = (
@@ -208,6 +222,13 @@ def _extract_province_data(raw: pd.DataFrame) -> pd.DataFrame | None:
         .reset_index()
         .rename(columns={value_col: "value_cad"})
     )
+
+    # Filter to last 12 months — prevents multi-year cumulative totals
+    max_date   = df["date"].max()
+    max_period = pd.Period(max_date, "M")
+    min_period = max_period - 11
+    df = df[(df["date"] >= str(min_period)) & (df["date"] <= str(max_date))].copy()
+    LOG.info("  Province data filtered to %s → %s (%d rows)", str(min_period), max_date, len(df))
 
     # HS2 chapter from raw HS code (same as province_hs2_summary in reference script)
     df["hs2"] = df["HS"].apply(_normalize_hs6).str[:2]
@@ -222,13 +243,22 @@ def _extract_province_data(raw: pd.DataFrame) -> pd.DataFrame | None:
 
     df["value_cad"] = pd.to_numeric(df["value_cad"], errors="coerce").fillna(0).astype("int64")
 
+    # Stash period info so downstream builders can embed it in JSON
+    df.attrs["period_start"] = str(min_period)
+    df.attrs["period_end"]   = str(max_period)
+
     provs = df["code"].nunique()
     LOG.info("  Province data ready: %d rows, %d provinces", len(df), provs)
     return df
 
 
 def build_provinces_from_raw(df: pd.DataFrame) -> list[dict]:
-    """Province trade totals: [{code, name, exports, imports, total}]."""
+    """Province trade totals: [{code, name, exports, imports, total, period_start, period_end}]."""
+    period_start  = df.attrs.get("period_start", "")
+    period_end    = df.attrs.get("period_end",   "")
+    trade_types   = set(df["trade_type"].unique())
+    imports_only  = "Export" not in trade_types or df[df["trade_type"] == "Export"]["value_cad"].sum() == 0
+
     agg = (
         df.groupby(["code", "name", "trade_type"])["value_cad"]
         .sum()
@@ -240,17 +270,23 @@ def build_provinces_from_raw(df: pd.DataFrame) -> list[dict]:
         imp = int(row.get("Import", 0))
         exp = int(row.get("Export", 0))
         results.append({
-            "code": str(row["code"]),
-            "name": str(row["name"]),
-            "exports": exp,
-            "imports": imp,
-            "total": imp + exp,
+            "code":         str(row["code"]),
+            "name":         str(row["name"]),
+            "exports":      exp,
+            "imports":      imp,
+            "total":        imp + exp,
+            "period_start": period_start,
+            "period_end":   period_end,
+            "imports_only": imports_only,
         })
     return sorted(results, key=lambda r: -r["total"])
 
 
 def build_provinces_commodities_from_raw(df: pd.DataFrame) -> list[dict]:
     """Province × HS2 breakdown: [{code, hs2, commodity, exports, imports, total}]."""
+    period_start = df.attrs.get("period_start", "")
+    period_end   = df.attrs.get("period_end",   "")
+
     agg = (
         df.groupby(["code", "hs2", "commodity", "trade_type"])["value_cad"]
         .sum()
@@ -262,12 +298,14 @@ def build_provinces_commodities_from_raw(df: pd.DataFrame) -> list[dict]:
         imp = int(row.get("Import", 0))
         exp = int(row.get("Export", 0))
         results.append({
-            "code": str(row["code"]),
-            "hs2": str(row["hs2"]),
-            "commodity": str(row["commodity"]),
-            "exports": exp,
-            "imports": imp,
-            "total": imp + exp,
+            "code":         str(row["code"]),
+            "hs2":          str(row["hs2"]),
+            "commodity":    str(row["commodity"]),
+            "exports":      exp,
+            "imports":      imp,
+            "total":        imp + exp,
+            "period_start": period_start,
+            "period_end":   period_end,
         })
     return sorted(results, key=lambda r: (-r["total"], r["code"]))
 
