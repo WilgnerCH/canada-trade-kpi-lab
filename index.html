@@ -1887,11 +1887,11 @@ z"/>
       <div class="cp-charts">
         <div>
           <div style="font-size:13px;font-weight:600;color:var(--gd);margin-bottom:10px" id="prov-exp-title">Top Exports</div>
-          <div style="position:relative;height:260px"><canvas id="prov-exp-chart"></canvas></div>
+          <div id="prov-exp-wrap" style="position:relative;height:260px"><canvas id="prov-exp-chart"></canvas></div>
         </div>
         <div>
           <div style="font-size:13px;font-weight:600;color:var(--gd);margin-bottom:10px" id="prov-imp-title">Top Imports</div>
-          <div style="position:relative;height:260px"><canvas id="prov-imp-chart"></canvas></div>
+          <div id="prov-imp-wrap" style="position:relative;height:260px"><canvas id="prov-imp-chart"></canvas></div>
         </div>
       </div>
       <div style="margin-top:18px;overflow-x:auto">
@@ -1906,8 +1906,8 @@ z"/>
     <div class="chart-grid">
       <div class="chart-card full-width">
         <h3>All Provinces &amp; Territories — Trade Ranking</h3>
-        <div class="csub">Click a bar to drill down · CAD$ billions · approximate 2023 annual figures</div>
-        <div class="legend">
+        <div class="csub" id="prov-overview-sub">Click a bar to drill down · CAD$ billions</div>
+        <div class="legend" id="prov-overview-legend">
           <div class="legend-item"><div class="ldot" style="background:#1a5c2e"></div>Exports</div>
           <div class="legend-item"><div class="ldot" style="background:#f5a623"></div>Imports</div>
         </div>
@@ -1918,11 +1918,11 @@ z"/>
     <div class="table-card">
       <h3>All Provinces &amp; Territories — Summary</h3>
       <table>
-        <thead><tr><th>#</th><th>Province / Territory</th><th>Exports</th><th>Imports</th><th>Balance</th><th>Total Trade</th><th>Export Share</th></tr></thead>
+        <thead><tr id="prov-all-thead"><th>#</th><th>Province / Territory</th><th>Exports</th><th>Imports</th><th>Balance</th><th>Total Trade</th><th>Share</th></tr></thead>
         <tbody id="prov-all-tbody"></tbody>
       </table>
     </div>
-    <div class="src-note">Approximate 2023 annual merchandise trade (customs basis) · Statistics Canada table 12-10-0088-01 · Values for reference only</div>
+    <div class="src-note" id="prov-src-note">Merchandise trade by province · Statistics Canada CIMTS · Values in CAD$</div>
   </div>
 
 </main>
@@ -2795,46 +2795,84 @@ async function renderProvMap(){
     .text(d=>PROV_NAME_TO_CODE[d.properties.name||'']||'');
 }
 
+function _ensureCanvas(wrapId,canvasId){
+  const wrap=document.getElementById(wrapId);
+  if(!document.getElementById(canvasId)){
+    const c=document.createElement('canvas');
+    c.id=canvasId;
+    wrap.innerHTML='';
+    wrap.appendChild(c);
+  }
+  return document.getElementById(canvasId);
+}
+
 function openProvPanel(code){
   const meta=PROVINCE_META[code]||{name:code,icon:'🍁'};
-  const prov=D.provinces.find(p=>p.code===code)||{exports:0,imports:0,total:0};
+  const prov=D.provinces.find(p=>p.code===code)||{exports:0,imports:0,total:0,imports_only:false};
   const comms=D.provinces_commodities.filter(c=>c.code===code);
   const totalAll=D.provinces.reduce((s,p)=>s+p.total,0);
+  const importsOnly=!!(prov.imports_only);
+
+  const periodLabel=prov.period_start&&prov.period_end
+    ? prov.period_start+' → '+prov.period_end : 'last 12 months';
 
   document.getElementById('prov-icon').textContent=meta.icon;
   document.getElementById('prov-name').textContent=meta.name+' ('+code+')';
-  document.getElementById('prov-subtitle').textContent=(meta.capital?' Capital: '+meta.capital+' · ':'')+
-    'Merchandise trade · approx. 2023 annual · customs basis';
+  document.getElementById('prov-subtitle').textContent=
+    (meta.capital?'Capital: '+meta.capital+' · ':'')
+    +(importsOnly?'Imports by customs-clearance province':'Merchandise trade')
+    +' · '+periodLabel+' · Statistics Canada CIMTS';
 
   const bal=prov.exports-prov.imports;
-  document.getElementById('prov-kpis').innerHTML=[
-    {l:'Total Exports',v:fmt(prov.exports),c:''},
-    {l:'Total Imports',v:fmt(prov.imports),c:'rt'},
-    {l:'Trade Balance',v:fmt(bal),c:'gt',vc:bal>=0?'kpi-up':'kpi-down'},
-    {l:'Share of Canada',v:totalAll?(prov.total/totalAll*100).toFixed(1)+'%':'—',c:'',sub:'of all provincial trade'},
-  ].map(k=>`<div class="cp-kpi"><div class="kpi-label">${k.l}</div>
+  const kpiItems=importsOnly
+    ?[
+        {l:'Total Imports',v:fmt(prov.imports),c:'rt'},
+        {l:'Share of Canada',v:totalAll?(prov.total/totalAll*100).toFixed(1)+'%':'—',sub:'of all provincial imports'},
+      ]
+    :[
+        {l:'Total Exports',v:fmt(prov.exports)},
+        {l:'Total Imports',v:fmt(prov.imports),c:'rt'},
+        {l:'Trade Balance',v:fmt(bal),vc:bal>=0?'kpi-up':'kpi-down'},
+        {l:'Share of Canada',v:totalAll?(prov.total/totalAll*100).toFixed(1)+'%':'—',sub:'of all provincial trade'},
+      ];
+  document.getElementById('prov-kpis').innerHTML=kpiItems.map(k=>`
+    <div class="cp-kpi"><div class="kpi-label">${k.l}</div>
     <div class="kpi-value ${k.vc||''}">${k.v}</div>
     ${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
 
-  /* Sort commodities */
-  const expSorted=[...comms].sort((a,b)=>b.exports-a.exports).slice(0,7);
-  const impSorted=[...comms].sort((a,b)=>b.imports-a.imports).slice(0,7);
-
+  /* Exports chart */
   dc('prov-exp-chart');
-  charts['prov-exp-chart']=new Chart(document.getElementById('prov-exp-chart'),{
-    type:'bar',
-    data:{
-      labels:expSorted.map(c=>c.hs2+' '+c.commodity.substring(0,22)),
-      datasets:[{label:'Exports',data:expSorted.map(c=>toB(c.exports)),backgroundColor:'#1a5c2e',borderRadius:4}]
-    },
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.x.toFixed(1)+'B'}}},
-      scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:10}},grid:{color:'#f0f3f0'}},
-              y:{ticks:{font:{size:10}}}}}
-  });
+  if(importsOnly){
+    document.getElementById('prov-exp-title').textContent='Exports by HS2 — not available by province';
+    document.getElementById('prov-exp-wrap').innerHTML=
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:6px">'
+      +'<div style="font-size:28px">📦</div>'
+      +'<p style="color:var(--muted);font-size:12px;text-align:center;margin:0;line-height:1.6">'
+      +'StatCan CIMTS assigns Province to<br>customs-clearance point (imports only).<br>'
+      +'Export breakdown by province is not<br>available in this dataset.</p></div>';
+  }else{
+    document.getElementById('prov-exp-title').textContent='Top Exports by HS2';
+    const expSorted=[...comms].sort((a,b)=>b.exports-a.exports).slice(0,7);
+    const expCanvas=_ensureCanvas('prov-exp-wrap','prov-exp-chart');
+    charts['prov-exp-chart']=new Chart(expCanvas,{
+      type:'bar',
+      data:{
+        labels:expSorted.map(c=>c.hs2+' '+c.commodity.substring(0,22)),
+        datasets:[{label:'Exports',data:expSorted.map(c=>toB(c.exports)),backgroundColor:'#1a5c2e',borderRadius:4}]
+      },
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.x.toFixed(1)+'B'}}},
+        scales:{x:{ticks:{callback:v=>'$'+v+'B',font:{size:10}},grid:{color:'#f0f3f0'}},
+                y:{ticks:{font:{size:10}}}}}
+    });
+  }
 
+  /* Imports chart */
+  document.getElementById('prov-imp-title').textContent='Top Imports by HS2';
+  const impSorted=[...comms].sort((a,b)=>b.imports-a.imports).slice(0,7);
   dc('prov-imp-chart');
-  charts['prov-imp-chart']=new Chart(document.getElementById('prov-imp-chart'),{
+  const impCanvas=_ensureCanvas('prov-imp-wrap','prov-imp-chart');
+  charts['prov-imp-chart']=new Chart(impCanvas,{
     type:'bar',
     data:{
       labels:impSorted.map(c=>c.hs2+' '+c.commodity.substring(0,22)),
@@ -2846,21 +2884,35 @@ function openProvPanel(code){
               y:{ticks:{font:{size:10}}}}}
   });
 
-  /* Detail table — union of exp+imp commodities */
+  /* Detail table */
   const allCodes=[...new Set(comms.map(c=>c.hs2))];
   const rows=allCodes.map(hs=>{
     const row=comms.find(c=>c.hs2===hs)||{commodity:'',exports:0,imports:0};
-    return{hs2:hs,commodity:row.commodity,exports:row.exports,imports:row.imports,total:row.exports+row.imports};
+    return{hs2:hs,commodity:row.commodity,exports:row.exports,imports:row.imports,total:row.imports+row.exports};
   }).sort((a,b)=>b.total-a.total);
 
-  document.getElementById('prov-detail-tbody').innerHTML=rows.map(r=>`<tr>
-    <td style="color:var(--muted);font-size:12px"><strong>${r.hs2}</strong></td>
-    <td>${r.commodity}</td>
-    <td>${fmt(r.exports)}</td>
-    <td>${fmt(r.imports)}</td>
-    <td style="color:${r.exports>=r.imports?'#16a34a':'#c0392b'}">${fmt(r.exports-r.imports)}</td>
-    <td><strong>${fmt(r.total)}</strong></td>
-  </tr>`).join('');
+  const thead=document.querySelector('#prov-panel table thead tr');
+  if(thead){
+    thead.innerHTML=importsOnly
+      ?'<th>HS2</th><th>Product Category</th><th>Imports</th><th>Share</th>'
+      :'<th>HS2</th><th>Product Category</th><th>Exports</th><th>Imports</th><th>Balance</th><th>Total</th>';
+  }
+  const totalImp=rows.reduce((s,r)=>s+r.imports,0);
+  document.getElementById('prov-detail-tbody').innerHTML=rows.map(r=>importsOnly
+    ?`<tr>
+      <td style="color:var(--muted);font-size:12px"><strong>${r.hs2}</strong></td>
+      <td>${r.commodity}</td>
+      <td>${fmt(r.imports)}</td>
+      <td style="color:var(--muted);font-size:11px">${totalImp?(r.imports/totalImp*100).toFixed(1)+'%':'—'}</td>
+    </tr>`
+    :`<tr>
+      <td style="color:var(--muted);font-size:12px"><strong>${r.hs2}</strong></td>
+      <td>${r.commodity}</td>
+      <td>${fmt(r.exports)}</td>
+      <td>${fmt(r.imports)}</td>
+      <td style="color:${r.exports>=r.imports?'#16a34a':'#c0392b'}">${fmt(r.exports-r.imports)}</td>
+      <td><strong>${fmt(r.total)}</strong></td>
+    </tr>`).join('');
 
   const panel=document.getElementById('prov-panel');
   panel.classList.add('visible');
@@ -2870,12 +2922,50 @@ function openProvPanel(code){
 function closeProvPanel(){
   document.getElementById('prov-panel').classList.remove('visible');
   ['prov-exp-chart','prov-imp-chart'].forEach(id=>dc(id));
+  // Restore canvas elements in case they were replaced by a "no data" placeholder
+  ['prov-exp-wrap','prov-imp-wrap'].forEach(wrapId=>{
+    const wrap=document.getElementById(wrapId);
+    if(wrap&&!wrap.querySelector('canvas')){
+      const c=document.createElement('canvas');
+      c.id=wrapId.replace('-wrap','-chart');
+      wrap.innerHTML='';
+      wrap.appendChild(c);
+    }
+  });
 }
 
 function renderProvOverview(){
   if(!D.provinces.length)return;
   const sorted=[...D.provinces].sort((a,b)=>b.total-a.total);
   const totalAll=sorted.reduce((s,p)=>s+p.total,0);
+  const importsOnly=!!(sorted[0]&&sorted[0].imports_only);
+
+  // Update subtitle, legend, table header and source note based on data period + imports_only flag
+  const p0=sorted[0]||{};
+  const periodLabel=p0.period_start&&p0.period_end
+    ? p0.period_start+' → '+p0.period_end : 'last 12 months';
+  const dataBasis=importsOnly?'Imports by customs-clearance province':'Merchandise trade';
+
+  const subEl=document.getElementById('prov-overview-sub');
+  if(subEl)subEl.textContent='Click a bar to drill down · CAD$ billions · '+dataBasis+' · '+periodLabel;
+
+  const legEl=document.getElementById('prov-overview-legend');
+  if(legEl){
+    legEl.innerHTML=importsOnly
+      ?'<div class="legend-item"><div class="ldot" style="background:#f5a623"></div>Imports (customs-clearance province)</div>'
+      :'<div class="legend-item"><div class="ldot" style="background:#1a5c2e"></div>Exports</div>'
+       +'<div class="legend-item"><div class="ldot" style="background:#f5a623"></div>Imports</div>';
+  }
+
+  const srcEl=document.getElementById('prov-src-note');
+  if(srcEl)srcEl.textContent=dataBasis+' · '+periodLabel+' · Statistics Canada CIMTS · Values in CAD$';
+
+  const theadEl=document.getElementById('prov-all-thead');
+  if(theadEl){
+    theadEl.innerHTML=importsOnly
+      ?'<th>#</th><th>Province / Territory</th><th>Imports</th><th>Share</th>'
+      :'<th>#</th><th>Province / Territory</th><th>Exports</th><th>Imports</th><th>Balance</th><th>Total Trade</th><th>Share</th>';
+  }
 
   /* Bar chart */
   dc('prov-bar');
@@ -2883,14 +2973,17 @@ function renderProvOverview(){
   if(barEl){
     const barH=Math.max(360,sorted.length*26);
     barEl.parentElement.style.minHeight=barH+'px';
+    const datasets=importsOnly
+      ?[{label:'Imports',data:sorted.map(p=>toB(p.imports)),backgroundColor:'#f5a623',borderRadius:3,stack:'s'}]
+      :[
+          {label:'Exports',data:sorted.map(p=>toB(p.exports)),backgroundColor:'#1a5c2e',borderRadius:3,stack:'s'},
+          {label:'Imports',data:sorted.map(p=>toB(p.imports)),backgroundColor:'#f5a623',borderRadius:3,stack:'s'},
+        ];
     charts['prov-bar']=new Chart(barEl,{
       type:'bar',
       data:{
         labels:sorted.map(p=>{const m=PROVINCE_META[p.code]||{};return(m.icon||'')+' '+p.name+' ('+p.code+')';}),
-        datasets:[
-          {label:'Exports',data:sorted.map(p=>toB(p.exports)),backgroundColor:'#1a5c2e',borderRadius:3,stack:'s'},
-          {label:'Imports',data:sorted.map(p=>toB(p.imports)),backgroundColor:'#f5a623',borderRadius:3,stack:'s'},
-        ]
+        datasets
       },
       options:{
         indexAxis:'y',responsive:true,maintainAspectRatio:false,
@@ -2906,9 +2999,17 @@ function renderProvOverview(){
   /* All provinces summary table */
   document.getElementById('prov-all-tbody').innerHTML=sorted.map((p,i)=>{
     const meta=PROVINCE_META[p.code]||{};
+    const share=totalAll?(p.total/totalAll*100).toFixed(1)+'%':'—';
+    if(importsOnly){
+      return`<tr style="cursor:pointer" onclick="openProvPanel('${p.code}')">
+        <td style="color:var(--muted)">${i+1}</td>
+        <td><strong>${meta.icon||''} ${p.name}</strong><span style="color:var(--muted);font-size:11px;margin-left:6px">${p.code}</span></td>
+        <td>${fmt(p.imports)}</td>
+        <td style="color:var(--muted)">${share}</td>
+      </tr>`;
+    }
     const bal=p.exports-p.imports;
     const balCls=bal>=0?'bs':'bd';
-    const share=totalAll?(p.total/totalAll*100).toFixed(1)+'%':'—';
     return`<tr style="cursor:pointer" onclick="openProvPanel('${p.code}')">
       <td style="color:var(--muted)">${i+1}</td>
       <td><strong>${meta.icon||''} ${p.name}</strong><span style="color:var(--muted);font-size:11px;margin-left:6px">${p.code}</span></td>
