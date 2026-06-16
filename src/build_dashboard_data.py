@@ -3,26 +3,22 @@ src/build_dashboard_data.py
 ===========================
 Build JSON data files for the Canada Trade KPI dashboard.
 
-Supports two parquet formats:
-  NEW  (from extract_statcan.py):  date, trade_type, partner, commodity, value_cad, row_type
-  OLD  (legacy HuggingFace):       date, trade_type, Country, HS, Value
+The HuggingFace parquet (canada_trade_full.parquet) has columns:
+  date, trade_type, Country, HS, Value, Province
 
-When the OLD format is detected, HS codes are normalised to HS6 BEFORE grouping
-(this fixes the ~$3B divergence from the previous pipeline where raw codes like
-'2709.00.10' and '2709.00.29' were kept separate instead of being rolled up).
+Province data is extracted from the SAME parquet before format conversion,
+matching the approach used in the original aggregation script.
 
-Input:  data/canada_trade.parquet  (local)  or  HuggingFace  (--hf flag)
-        data/canada_trade_provinces.parquet  (optional, from table 12-10-0088-01)
 Output: data/*.json
 
-  monthly.json              [{date, imports, exports, balance}]
-  countries.json            [{partner, imports, exports, total}]
-  countries_monthly.json    [{date, partner, imports, exports, total}]
-  commodities.json          [{commodity, imports, exports, total}]
-  commodities_monthly.json  [{date, commodity, imports, exports, total}]
-  metadata.json             {last_updated, data_source, first_period, ...}
-  provinces.json            [{code, name, exports, imports, total}]            (if provincial data available)
-  provinces_commodities.json [{code, hs2, commodity, exports, imports}]        (if provincial data available)
+  monthly.json               [{date, imports, exports, balance}]
+  countries.json             [{partner, imports, exports, total}]
+  countries_monthly.json     [{date, partner, imports, exports, total}]
+  commodities.json           [{commodity, imports, exports, total}]
+  commodities_monthly.json   [{date, commodity, imports, exports, total}]
+  metadata.json              {last_updated, data_source, first_period, ...}
+  provinces.json             [{code, name, exports, imports, total}]
+  provinces_commodities.json [{code, hs2, commodity, exports, imports, total}]
 """
 
 from __future__ import annotations
@@ -37,146 +33,98 @@ import pandas as pd
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)s  %(message)s")
 LOG = logging.getLogger(__name__)
 
-LOCAL          = "data/canada_trade.parquet"
-LOCAL_PROVINCE = "data/canada_trade_provinces.parquet"
+LOCAL   = "data/canada_trade.parquet"
 OUT_DIR = pathlib.Path("data")
 TOP_N   = 20
 
-# Try new filename first, then fall back to legacy filename
 HF_URLS = [
     "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade.parquet",
     "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade_full.parquet",
 ]
 
-HF_PROVINCE_URL = (
-    "https://huggingface.co/datasets/WilgnerCH/canada-trade-data/resolve/main/canada_trade_provinces.parquet"
-)
-
-PROVINCE_CODES = {
+# Province name → 2-letter code (handles both full names and abbreviations)
+PROVINCE_CODES: dict[str, str] = {
     "Alberta": "AB", "British Columbia": "BC", "Manitoba": "MB",
     "New Brunswick": "NB", "Newfoundland and Labrador": "NL",
     "Northwest Territories": "NT", "Nova Scotia": "NS", "Nunavut": "NU",
     "Ontario": "ON", "Prince Edward Island": "PE",
     "Quebec": "QC", "Québec": "QC", "Saskatchewan": "SK",
     "Yukon Territory": "YT", "Yukon": "YT",
+    # Abbreviations (pass-through if already coded)
+    "AB": "AB", "BC": "BC", "MB": "MB", "NB": "NB", "NL": "NL",
+    "NT": "NT", "NS": "NS", "NU": "NU", "ON": "ON", "PE": "PE",
+    "QC": "QC", "SK": "SK", "YT": "YT",
 }
 
-# ── HS2 chapter names (for legacy format conversion) ─────────────────────────
+PROVINCE_DISPLAY: dict[str, str] = {
+    "AB": "Alberta", "BC": "British Columbia", "MB": "Manitoba",
+    "NB": "New Brunswick", "NL": "Newfoundland & Labrador",
+    "NT": "Northwest Territories", "NS": "Nova Scotia", "NU": "Nunavut",
+    "ON": "Ontario", "PE": "Prince Edward Island",
+    "QC": "Quebec", "SK": "Saskatchewan", "YT": "Yukon",
+}
+
+# ── HS2 chapter names ─────────────────────────────────────────────────────────
 
 HS2_NAMES: dict[str, str] = {
-    "01":"Live animals","02":"Meat & offal","03":"Fish & seafood",
-    "04":"Dairy products","05":"Other animal products","06":"Live trees & plants",
-    "07":"Vegetables","08":"Fruit & nuts","09":"Coffee, tea & spices",
-    "10":"Cereals","11":"Milling products","12":"Oil seeds",
-    "13":"Resins & gums","14":"Vegetable materials","15":"Animal/veg fats & oils",
-    "16":"Prepared meat & fish","17":"Sugars","18":"Cocoa & cocoa products",
-    "19":"Prepared cereals","20":"Prepared vegetables","21":"Misc food preparations",
-    "22":"Beverages & spirits","23":"Food industry residues","24":"Tobacco",
-    "25":"Salt, sulphur, stone, cement","26":"Ores, slag & ash",
-    "27":"Mineral fuels & oils","28":"Inorganic chemicals",
-    "29":"Organic chemicals","30":"Pharmaceuticals","31":"Fertilizers",
-    "32":"Tanning & dye extracts","33":"Cosmetics & perfumes",
-    "34":"Soap & cleaning products","35":"Protein substances",
-    "36":"Explosives","37":"Photographic goods","38":"Misc chemical products",
-    "39":"Plastics","40":"Rubber","41":"Raw hides & skins","42":"Leather goods",
-    "43":"Furskins","44":"Wood & wood articles","45":"Cork","46":"Basketware",
-    "47":"Wood pulp","48":"Paper & paperboard","49":"Printed books & media",
-    "50":"Silk","51":"Wool","52":"Cotton","53":"Vegetable textile fibres",
-    "54":"Man-made filaments","55":"Man-made staple fibres","56":"Wadding & felt",
-    "57":"Carpets","58":"Special woven fabrics","59":"Coated textiles",
-    "60":"Knitted fabrics","61":"Knitted apparel","62":"Woven apparel",
-    "63":"Other made-up textiles","64":"Footwear","65":"Headgear",
-    "66":"Umbrellas","67":"Feathers & artificial flowers",
-    "68":"Stone & cement articles","69":"Ceramic products","70":"Glass",
-    "71":"Precious metals & stones","72":"Iron & steel",
-    "73":"Articles of iron & steel","74":"Copper","75":"Nickel",
-    "76":"Aluminium","78":"Lead","79":"Zinc","80":"Tin","81":"Other base metals",
-    "82":"Tools & cutlery","83":"Miscellaneous metal articles",
-    "84":"Machinery & mechanical appliances","85":"Electrical equipment",
-    "86":"Railway equipment","87":"Vehicles","88":"Aircraft & spacecraft",
-    "89":"Ships & boats","90":"Optical & medical instruments",
-    "91":"Clocks & watches","92":"Musical instruments",
-    "93":"Arms & ammunition","94":"Furniture","95":"Toys & sports equipment",
-    "96":"Miscellaneous manufactures","97":"Works of art",
-    "98":"Special transactions (CA)","99":"Confidential trade (CA)",
+    "01": "Live animals", "02": "Meat & offal", "03": "Fish & seafood",
+    "04": "Dairy products", "05": "Other animal products", "06": "Live trees & plants",
+    "07": "Vegetables", "08": "Fruit & nuts", "09": "Coffee, tea & spices",
+    "10": "Cereals", "11": "Milling products", "12": "Oil seeds",
+    "13": "Resins & gums", "14": "Vegetable materials", "15": "Animal/veg fats & oils",
+    "16": "Prepared meat & fish", "17": "Sugars", "18": "Cocoa & cocoa products",
+    "19": "Prepared cereals", "20": "Prepared vegetables", "21": "Misc food preparations",
+    "22": "Beverages & spirits", "23": "Food industry residues", "24": "Tobacco",
+    "25": "Salt, sulphur, stone, cement", "26": "Ores, slag & ash",
+    "27": "Mineral fuels & oils", "28": "Inorganic chemicals",
+    "29": "Organic chemicals", "30": "Pharmaceuticals", "31": "Fertilizers",
+    "32": "Tanning & dye extracts", "33": "Cosmetics & perfumes",
+    "34": "Soap & cleaning products", "35": "Protein substances",
+    "36": "Explosives", "37": "Photographic goods", "38": "Misc chemical products",
+    "39": "Plastics", "40": "Rubber", "41": "Raw hides & skins", "42": "Leather goods",
+    "43": "Furskins", "44": "Wood & wood articles", "45": "Cork", "46": "Basketware",
+    "47": "Wood pulp", "48": "Paper & paperboard", "49": "Printed books & media",
+    "50": "Silk", "51": "Wool", "52": "Cotton", "53": "Vegetable textile fibres",
+    "54": "Man-made filaments", "55": "Man-made staple fibres", "56": "Wadding & felt",
+    "57": "Carpets", "58": "Special woven fabrics", "59": "Coated textiles",
+    "60": "Knitted fabrics", "61": "Knitted apparel", "62": "Woven apparel",
+    "63": "Other made-up textiles", "64": "Footwear", "65": "Headgear",
+    "66": "Umbrellas", "67": "Feathers & artificial flowers",
+    "68": "Stone & cement articles", "69": "Ceramic products", "70": "Glass",
+    "71": "Precious metals & stones", "72": "Iron & steel",
+    "73": "Articles of iron & steel", "74": "Copper", "75": "Nickel",
+    "76": "Aluminium", "78": "Lead", "79": "Zinc", "80": "Tin", "81": "Other base metals",
+    "82": "Tools & cutlery", "83": "Miscellaneous metal articles",
+    "84": "Machinery & mechanical appliances", "85": "Electrical equipment",
+    "86": "Railway equipment", "87": "Vehicles", "88": "Aircraft & spacecraft",
+    "89": "Ships & boats", "90": "Optical & medical instruments",
+    "91": "Clocks & watches", "92": "Musical instruments",
+    "93": "Arms & ammunition", "94": "Furniture", "95": "Toys & sports equipment",
+    "96": "Miscellaneous manufactures", "97": "Works of art",
+    "98": "Special transactions (CA)", "99": "Confidential trade (CA)",
 }
 
 
-# ── Legacy format normalisation ───────────────────────────────────────────────
+# ── HS code normalisation ─────────────────────────────────────────────────────
 
 def _normalize_hs6(code: object) -> str:
-    """
-    Convert raw Statistics Canada HS codes to 6-digit normalized form.
-    Examples: '2709.00.10' → '270900'
-              '2709.00.00 49' → '270900'
-              '0101.21.10' → '010121'
-    """
+    """'2709.00.10' → '270900',  '0101.21.10' → '010121'"""
     if pd.isna(code):
         return "000000"
     cleaned = str(code).replace(".", "").replace(" ", "")
     return cleaned[:6].zfill(6)
 
 
-def _convert_old_format(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Convert legacy parquet (Country / HS / Value) to the internal format.
-
-    KEY FIX: HS codes are normalised to HS6 BEFORE grouping so that
-    '2709.00.10', '2709.00.29', '2709.00.00 49' all collapse into the same
-    HS2 chapter '27 – Mineral fuels & oils'.  In the old pipeline the groupby
-    was performed on raw codes, which kept these as separate rows and produced
-    incorrect totals in product-level breakdowns.
-    """
-    LOG.info("Old parquet format detected (Country/HS/Value) — applying HS normalisation")
-    df = df.copy()
-
-    # Normalise date to YYYY-MM
-    try:
-        df["date"] = pd.to_datetime(df["date"]).dt.to_period("M").astype(str)
-    except Exception:
-        pass  # already in correct format
-
-    # Normalise HS codes → 6 digits (THE FIX)
-    df["hs6"] = df["HS"].apply(_normalize_hs6)
-    df["hs2"] = df["hs6"].str[:2]
-
-    # Remove invalid entries where Canada is its own trading partner
-    df = df[~df["Country"].isin(["CA", "Canada", "CANADA"])].copy()
-
-    # Map HS2 → human-readable commodity name
-    df["commodity"] = df["hs2"].map(HS2_NAMES).fillna(df["hs2"].apply(lambda x: f"HS {x}"))
-
-    df = df.rename(columns={"Country": "partner", "Value": "value_cad"})
-    df["value_cad"] = pd.to_numeric(df["value_cad"], errors="coerce").fillna(0).astype("int64")
-    df["row_type"] = "detail"
-
-    # Group by normalised commodity — consolidates all HS10 sub-codes into HS2
-    df = (
-        df.groupby(
-            ["date", "trade_type", "partner", "commodity", "row_type"],
-            as_index=False,
-        )["value_cad"].sum()
-    )
-
-    LOG.info(
-        "  Converted: %d rows  |  partners=%d  commodities=%d",
-        len(df),
-        df["partner"].nunique(),
-        df["commodity"].nunique(),
-    )
-    return df
-
-
-# ── Load ──────────────────────────────────────────────────────────────────────
+# ── Load raw parquet (no conversion) ─────────────────────────────────────────
 
 def _load_hf() -> pd.DataFrame:
-    """Try HuggingFace URLs in order (new filename → legacy filename)."""
+    """Try HuggingFace URLs in order."""
     last_err: Exception | None = None
     for url in HF_URLS:
         try:
             LOG.info("Trying %s …", url)
             df = pd.read_parquet(url)
-            LOG.info("  OK (%d rows)", len(df))
+            LOG.info("  OK — %d rows, columns: %s", len(df), list(df.columns))
             return df
         except Exception as e:
             LOG.warning("  ✗  %s", e)
@@ -184,37 +132,152 @@ def _load_hf() -> pd.DataFrame:
     raise RuntimeError(f"Cannot load parquet from HuggingFace: {last_err}")
 
 
-def load(use_hf: bool = False) -> pd.DataFrame:
+def _load_raw(use_hf: bool = False) -> pd.DataFrame:
+    """Load raw parquet without any format conversion."""
     if use_hf:
-        df = _load_hf()
-    else:
-        LOG.info("Loading from %s …", LOCAL)
-        df = pd.read_parquet(LOCAL)
+        return _load_hf()
+    LOG.info("Loading from %s …", LOCAL)
+    return pd.read_parquet(LOCAL)
 
-    # Detect format and convert if needed
-    if "Country" in df.columns and "HS" in df.columns:
-        df = _convert_old_format(df)
-    elif "row_type" not in df.columns:
-        LOG.warning("'row_type' column missing — treating all rows as 'detail'")
-        df["row_type"] = "detail"
 
-    LOG.info("Loaded: %d rows  |  %s → %s", len(df), df["date"].min(), df["date"].max())
+# ── Legacy format conversion (Country/HS/Value → internal) ───────────────────
+
+def _convert_old_format(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Convert legacy parquet to internal format.
+    HS codes are normalised to HS2 BEFORE grouping — this fixes the $3B divergence.
+    """
+    LOG.info("Old parquet format (Country/HS/Value) — normalising …")
+    df = df.copy()
+
+    try:
+        df["date"] = pd.to_datetime(df["date"]).dt.to_period("M").astype(str)
+    except Exception:
+        pass
+
+    df["hs6"] = df["HS"].apply(_normalize_hs6)
+    df["hs2"] = df["hs6"].str[:2]
+    df = df[~df["Country"].isin(["CA", "Canada", "CANADA"])].copy()
+    df["commodity"] = df["hs2"].map(HS2_NAMES).fillna(df["hs2"].apply(lambda x: f"HS {x}"))
+
+    df = df.rename(columns={"Country": "partner", "Value": "value_cad"})
+    df["value_cad"] = pd.to_numeric(df["value_cad"], errors="coerce").fillna(0).astype("int64")
+    df["row_type"] = "detail"
+
+    df = df.groupby(
+        ["date", "trade_type", "partner", "commodity", "row_type"], as_index=False
+    )["value_cad"].sum()
+
+    LOG.info("  Converted: %d rows | partners=%d commodities=%d",
+             len(df), df["partner"].nunique(), df["commodity"].nunique())
     return df
 
 
-# ── Row-type helpers ──────────────────────────────────────────────────────────
+# ── Province extraction from raw parquet ─────────────────────────────────────
+
+def _extract_province_data(raw: pd.DataFrame) -> pd.DataFrame | None:
+    """
+    Extract province-level aggregation from the raw parquet.
+
+    The HuggingFace dataset includes a 'Province' column alongside 'Country'.
+    Province represents the Canadian origin (exports) or destination (imports).
+
+    Steps mirror the user's clean_data_province() approach:
+      1. Group by date / trade_type / Province / HS  (deduplicate)
+      2. Extract HS2 chapter from raw HS code
+      3. Map province name → 2-letter code
+    """
+    if "Province" not in raw.columns:
+        LOG.info("No 'Province' column in dataset — province JSON will use static fallback")
+        return None
+
+    LOG.info("Extracting province data from raw parquet …")
+    df = raw.copy()
+
+    # Normalize date
+    try:
+        df["date"] = pd.to_datetime(df["date"]).dt.to_period("M").astype(str)
+    except Exception:
+        pass
+
+    # Deduplicate (same as clean_data_province in the reference script)
+    value_col = "Value" if "Value" in df.columns else "value_cad"
+    df = (
+        df.groupby(["date", "trade_type", "Province", "HS"])[value_col]
+        .sum()
+        .reset_index()
+        .rename(columns={value_col: "value_cad"})
+    )
+
+    # HS2 chapter from raw HS code (same as province_hs2_summary in reference script)
+    df["hs2"] = df["HS"].apply(_normalize_hs6).str[:2]
+    df["commodity"] = df["hs2"].map(HS2_NAMES).fillna(df["hs2"].apply(lambda x: f"HS {x}"))
+
+    # Province name → 2-letter code
+    df["code"] = df["Province"].map(PROVINCE_CODES).fillna(
+        df["Province"].str.strip().str[:2].str.upper()
+    )
+    # Use clean display name
+    df["name"] = df["code"].map(PROVINCE_DISPLAY).fillna(df["Province"])
+
+    df["value_cad"] = pd.to_numeric(df["value_cad"], errors="coerce").fillna(0).astype("int64")
+
+    provs = df["code"].nunique()
+    LOG.info("  Province data ready: %d rows, %d provinces", len(df), provs)
+    return df
+
+
+def build_provinces_from_raw(df: pd.DataFrame) -> list[dict]:
+    """Province trade totals: [{code, name, exports, imports, total}]."""
+    agg = (
+        df.groupby(["code", "name", "trade_type"])["value_cad"]
+        .sum()
+        .unstack("trade_type", fill_value=0)
+        .reset_index()
+    )
+    results = []
+    for _, row in agg.iterrows():
+        imp = int(row.get("Import", 0))
+        exp = int(row.get("Export", 0))
+        results.append({
+            "code": str(row["code"]),
+            "name": str(row["name"]),
+            "exports": exp,
+            "imports": imp,
+            "total": imp + exp,
+        })
+    return sorted(results, key=lambda r: -r["total"])
+
+
+def build_provinces_commodities_from_raw(df: pd.DataFrame) -> list[dict]:
+    """Province × HS2 breakdown: [{code, hs2, commodity, exports, imports, total}]."""
+    agg = (
+        df.groupby(["code", "hs2", "commodity", "trade_type"])["value_cad"]
+        .sum()
+        .unstack("trade_type", fill_value=0)
+        .reset_index()
+    )
+    results = []
+    for _, row in agg.iterrows():
+        imp = int(row.get("Import", 0))
+        exp = int(row.get("Export", 0))
+        results.append({
+            "code": str(row["code"]),
+            "hs2": str(row["hs2"]),
+            "commodity": str(row["commodity"]),
+            "exports": exp,
+            "imports": imp,
+            "total": imp + exp,
+        })
+    return sorted(results, key=lambda r: (-r["total"], r["code"]))
+
+
+# ── Row-type helpers (for new-format parquet) ─────────────────────────────────
 
 def _rows(df: pd.DataFrame, row_type: str) -> pd.DataFrame:
-    """
-    Return rows of a specific type, falling back through the priority chain.
-    For old-format data (all rows are 'detail'), every aggregation falls back
-    to detail rows, which is correct — the normalisation already happened in
-    _convert_old_format().
-    """
     typed = df[df["row_type"] == row_type]
     if not typed.empty:
         return typed
-
     LOG.warning("No '%s' rows — fallback chain", row_type)
     for fb in ["grand_total", "country_total", "commodity_total", "detail"]:
         if fb == row_type:
@@ -223,8 +286,6 @@ def _rows(df: pd.DataFrame, row_type: str) -> pd.DataFrame:
         if not fallback.empty:
             LOG.warning("  → using '%s'", fb)
             return fallback
-
-    LOG.warning("  → no fallback; returning empty DataFrame")
     return typed
 
 
@@ -288,87 +349,20 @@ def build_commodities_monthly(df: pd.DataFrame) -> list[dict]:
     return sorted(_records(pivot, ["date", "commodity"]), key=lambda r: (r["date"], -r["total"]))
 
 
-def _load_province_data(use_hf: bool = False) -> pd.DataFrame | None:
-    """
-    Load provincial trade data from table 12-10-0088-01 (if available).
-    Schema expected: date, trade_type, province, commodity, value_cad, row_type
-    Returns None if not available.
-    """
-    if use_hf:
-        try:
-            LOG.info("Trying province parquet from HuggingFace …")
-            df = pd.read_parquet(HF_PROVINCE_URL)
-            LOG.info("  Province data OK (%d rows)", len(df))
-            return df
-        except Exception as e:
-            LOG.info("  Province HF data not available: %s", e)
-            return None
-    else:
-        if not pathlib.Path(LOCAL_PROVINCE).exists():
-            return None
-        try:
-            LOG.info("Loading province data from %s …", LOCAL_PROVINCE)
-            return pd.read_parquet(LOCAL_PROVINCE)
-        except Exception as e:
-            LOG.warning("Cannot load %s: %s", LOCAL_PROVINCE, e)
-            return None
-
-
-def build_provinces(df_prov: pd.DataFrame) -> list[dict]:
-    """Build province totals: [{code, name, exports, imports, total}]."""
-    prov_col = next((c for c in df_prov.columns if "province" in c.lower() or "geo" in c.lower()), None)
-    if prov_col is None:
-        LOG.warning("No province column found — skipping")
-        return []
-
-    totals = _rows(df_prov, "country_total") if "row_type" in df_prov.columns else df_prov
-    pivot = _pivot(totals, [prov_col])
-    results = []
-    for _, row in pivot.iterrows():
-        raw_name = str(row[prov_col]).strip()
-        code = PROVINCE_CODES.get(raw_name, raw_name[:2].upper())
-        name = raw_name if raw_name not in PROVINCE_CODES else raw_name
-        imp = int(row.get("Import", 0))
-        exp = int(row.get("Export", 0))
-        results.append({"code": code, "name": name, "exports": exp, "imports": imp, "total": imp + exp})
-    return sorted(results, key=lambda r: -r["total"])
-
-
-def build_provinces_commodities(df_prov: pd.DataFrame) -> list[dict]:
-    """Build province×commodity breakdown: [{code, hs2, commodity, exports, imports}]."""
-    prov_col = next((c for c in df_prov.columns if "province" in c.lower() or "geo" in c.lower()), None)
-    if prov_col is None:
-        return []
-
-    details = _rows(df_prov, "detail") if "row_type" in df_prov.columns else df_prov
-    pivot = _pivot(details, [prov_col, "commodity"])
-    results = []
-    for _, row in pivot.iterrows():
-        raw_name = str(row[prov_col]).strip()
-        code = PROVINCE_CODES.get(raw_name, raw_name[:2].upper())
-        commodity = str(row["commodity"]).strip()
-        hs2 = commodity[:2] if len(commodity) >= 2 else "00"
-        imp = int(row.get("Import", 0))
-        exp = int(row.get("Export", 0))
-        results.append({"code": code, "hs2": hs2, "commodity": commodity,
-                        "exports": exp, "imports": imp, "total": imp + exp})
-    return sorted(results, key=lambda r: (-r["total"], r["code"]))
-
-
-def build_metadata(df: pd.DataFrame) -> dict:
-    # Detect whether data came from legacy or new format
+def build_metadata(df: pd.DataFrame, has_province: bool = False) -> dict:
     has_row_types = df["row_type"].nunique() > 1
     src = (
         "Statistics Canada (tables 12-10-0011-01 / 12-10-0012-01)"
         if has_row_types
-        else "WilgnerCH/canada-trade-data (HuggingFace) — Statistics Canada CIMTS origin"
+        else "WilgnerCH/canada-trade-data (HuggingFace) — Statistics Canada CIMTS"
     )
     return {
-        "last_updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "data_source":  src,
-        "first_period": df["date"].min(),
-        "last_period":  df["date"].max(),
-        "total_rows":   int(len(df)),
+        "last_updated":   datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "data_source":    src,
+        "first_period":   df["date"].min(),
+        "last_period":    df["date"].max(),
+        "total_rows":     int(len(df)),
+        "province_data":  has_province,
     }
 
 
@@ -379,31 +373,49 @@ def _save(obj: object, name: str) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
     n = len(obj) if isinstance(obj, (list, dict)) else "?"
-    LOG.info("  %-40s (%s items)", str(path), n)
+    LOG.info("  %-45s (%s items)", str(path), n)
 
 
 def run(use_hf: bool = False) -> None:
     OUT_DIR.mkdir(exist_ok=True)
-    df = load(use_hf=use_hf)
 
+    # ── Step 1: load raw parquet (Province column still intact) ──────────────
+    raw = _load_raw(use_hf=use_hf)
+
+    # ── Step 2: extract province data BEFORE format conversion ───────────────
+    df_prov = _extract_province_data(raw)
+
+    # ── Step 3: convert to standard internal format ───────────────────────────
+    if "Country" in raw.columns and "HS" in raw.columns:
+        df = _convert_old_format(raw)
+    else:
+        df = raw.copy()
+        if "row_type" not in df.columns:
+            df["row_type"] = "detail"
+
+    LOG.info("Main data: %d rows | %s → %s", len(df), df["date"].min(), df["date"].max())
+
+    # ── Step 4: build and save main JSON files ────────────────────────────────
     LOG.info("Building dashboard JSON files …")
     _save(build_monthly(df),              "monthly.json")
     _save(build_countries(df),            "countries.json")
     _save(build_countries_monthly(df),    "countries_monthly.json")
     _save(build_commodities(df),          "commodities.json")
     _save(build_commodities_monthly(df),  "commodities_monthly.json")
-    _save(build_metadata(df),             "metadata.json")
+    _save(build_metadata(df, has_province=df_prov is not None), "metadata.json")
 
-    # Province data (optional — from table 12-10-0088-01)
-    df_prov = _load_province_data(use_hf=use_hf)
-    if df_prov is not None:
-        LOG.info("Building province JSON files …")
-        _save(build_provinces(df_prov),              "provinces.json")
-        _save(build_provinces_commodities(df_prov),  "provinces_commodities.json")
+    # ── Step 5: build province JSON files ────────────────────────────────────
+    if df_prov is not None and not df_prov.empty:
+        LOG.info("Building province JSON files from real dataset …")
+        provs = build_provinces_from_raw(df_prov)
+        coms  = build_provinces_commodities_from_raw(df_prov)
+        _save(provs, "provinces.json")
+        _save(coms,  "provinces_commodities.json")
+        LOG.info("  Province data: %d provinces, %d commodity rows", len(provs), len(coms))
     else:
-        LOG.info("No province data available — skipping provinces.json (static file in data/ will be used)")
+        LOG.info("Province column not found — static provinces.json unchanged")
 
-    LOG.info("Done. Dashboard data ready in %s/", OUT_DIR)
+    LOG.info("Done ✓ — dashboard data ready in %s/", OUT_DIR)
 
 
 if __name__ == "__main__":
